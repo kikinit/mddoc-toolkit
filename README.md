@@ -20,4 +20,4 @@ A JavaScript library for parsing and extracting key information from README file
 To install the Readme Parser module, you can clone this repository or include it as part of your project manually.
 
 ```bash
-git clone https://github.com/your-username/readme-parser.git
+git clone https://github.com/legitmattias/readme-parser.git
