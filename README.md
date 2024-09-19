@@ -1,6 +1,6 @@
 # Readme Parser
 
-A JavaScript library for parsing and extracting key information from README files written in Markdown. This parser focuses on retrieving important sections such as the project description, installation instructions, usage examples, and more.
+A JavaScript library for parsing and extracting key information from code repository README files written in Markdown. This parser focuses on retrieving important sections such as the project description, installation instructions, usage examples, and more.
 
 ## Features (Work in Progress)
 
