@@ -15,6 +15,8 @@
   "author": "mu222cu@student.lnu.se",
   "license": "MIT",
   "devDependencies": {
+    "eslint": "^9.10.0",
+    "prettier": "^3.3.3"
   },
   "dependencies": {
   }
