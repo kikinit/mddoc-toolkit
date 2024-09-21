@@ -2,6 +2,13 @@ import { readFileSync } from 'node:fs'
 
 // Read the markdown file into a string.
 // TODO: Fix markdown file argument.
-const content = readFileSync('./aux/dummy-readmeas/README_DUMMY.md', 'utf-8')
+const readMarkdownFile = (filePath) => {
+  try {
+    const content = readFileSync('./aux/dummy-readmeas/README_DUMMY.md', 'utf-8')
+    console.log(content)
+  } catch (err) {
+    console.error(`Error reading file: ${err.message}`)
+  }
+}
 
-console.log(content)
+readMarkdownFile('README.md')
