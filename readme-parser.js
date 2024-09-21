@@ -1,7 +1,6 @@
 import { readFileSync } from 'node:fs'
 
 // Read the markdown file into a string.
-// TODO: Fix markdown file argument.
 const readMarkdownFile = (filePath) => {
   try {
     return readFileSync(filePath, 'utf-8')
@@ -12,18 +11,30 @@ const readMarkdownFile = (filePath) => {
 
 // Extract markdown headings from the content and return their levels and text.
 const extractHeadings = (content) => {
-  // Regular expression to match headings: one or more `#` symbols followed by a space and text.
-  const headingRegex = /^(#+)\s+(.*)/gm
+  // Regex to match headings: both # style and underline style
+  const headingRegex = /^(#+)\s*(.*)|^(.+)\n(=+|-+)\s*$/gm
 
-  // Extract headings using `matchAll`.
-  const headings = [...content.matchAll(headingRegex)]
-  console.log(headings)
+  const headings = []
+  let match
 
-  // Parse the matched headings.
-  return headings.map(match => ({
-    level: match[1].length,  // Number of `#` symbols represents the heading level.
-    text: match[2]           // The heading text itself.
-  }))
+  while ((match = headingRegex.exec(content)) !== null) {
+    if (match[1]) {
+      // Handle `#`-style headings.
+      headings.push({
+        level: match[1].length,  // The number of `#` defines the heading level.
+        text: match[2].trim()    // The heading text itself.
+      })
+    } else if (match[3] && match[4]) {
+      // Handle underline-style headings.
+      const underline = match[4].trim()  // Capture the underline.
+      const level = underline[0] === '=' ? 1 : 2  // Determine if it's h1 or h2.
+      headings.push({
+        level: level,
+        text: match[3].trim()  // The heading text is in the line above the underline.
+      })
+    }
+  }
+  return headings
 }
 
 const fileContent = readMarkdownFile('./aux/dummy-readmeas/README_DUMMY.md')
