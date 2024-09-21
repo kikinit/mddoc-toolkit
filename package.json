@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "A JavaScript library for parsing and extracting key information from code repository README files written in Markdown. This parser focuses on retrieving important sections such as the project description, installation instructions, usage examples, and more.",
   "main": "readme-parser.js",
+  "type":"module",
   "scripts": {
   "start": "node --env-file=.env readme-parser.js",
   "lint": "npx eslint ./readme-parser.js || exit 0",
@@ -10,7 +11,7 @@
 },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/legitmattias/readme-parser.js.git"
+    "url": "git+https://github.com/legitmattias/readme-parser.git"
   },
   "author": "mu222cu@student.lnu.se",
   "license": "MIT",
