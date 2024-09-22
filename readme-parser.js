@@ -1,4 +1,7 @@
+import { log } from 'node:console'
 import { readFileSync } from 'node:fs'
+
+// TODO: Remove all console.logs
 
 // Read the markdown file into a string.
 const readMarkdownFile = (filePath) => {
@@ -14,30 +17,62 @@ const extractHeadings = (content) => {
   // Regex to match headings: both # style and underline style
   const headingRegex = /^(#+)\s*(.*)|^(.+)\n(=+|-+)\s*$/gm
 
-  const headings = []
+  const sections = []
   let match
+  let lastIndex = 0 // Track last heading.
 
   while ((match = headingRegex.exec(content)) !== null) {
+    // console.log('Match:', match)
+    console.log('Match Index:', match.index)
+    
+    
+    const headingStartIndex = match.index
+
+    // Grab the body text between last heading and current heading.
+    if (sections.length > 0) {
+      const previousSection = sections[sections.length - 1]
+      // console.log('previousSection:', previousSection)
+      
+      previousSection.body = content.slice(lastIndex, headingStartIndex).trim()
+      // console.log('previousSection.body:', previousSection.body)
+    }
+
     if (match[1]) {
       // Handle `#`-style headings.
-      headings.push({
+      sections.push({
         level: match[1].length,  // The number of `#` defines the heading level.
-        text: match[2].trim()    // The heading text itself.
+        text: match[2].trim(),    // The heading text itself.
+        body: '' // TODO: Populate body with body text.
       })
     } else if (match[3] && match[4]) {
       // Handle underline-style headings.
       const underline = match[4].trim()  // Capture the underline.
       const level = underline[0] === '=' ? 1 : 2  // Determine if it's h1 or h2.
-      headings.push({
+      sections.push({
         level: level,
-        text: match[3].trim()  // The heading text is in the line above the underline.
+        text: match[3].trim(),  // The heading text is in the line above the underline.
+        body: '' // TODO: Populate body with body text.
       })
     }
+
+    // Update lastIndex to the end of the current heading.
+    lastIndex = headingRegex.lastIndex
+    console.log('headingRegex.lastIndex:', lastIndex)
   }
-  return headings
+
+  // Capture the body text after the last heading.
+  if (sections.length > 0) {
+    const lastSection = sections[sections.length - 1]
+    lastSection.body = content.slice(lastIndex).trim()
+  }
+
+  return sections
 }
 
-const fileContent = readMarkdownFile('./aux/dummy-readmeas/README_DUMMY.md')
-const headings = extractHeadings(fileContent)
-console.log(headings)
+// const fileContent = readMarkdownFile('./aux/test-readmeas/README_bics.md')
+const fileContent = readMarkdownFile('./README.md')
+const sections = extractHeadings(fileContent)
+console.log('THE SECTIONS:', sections)
+// console.log('Heading:', sections[0].text)
+// console.log('Body:', sections[0].body)
 
