@@ -4,6 +4,7 @@ A JavaScript library for parsing and extracting key information from code reposi
 
 ## Features (Work in Progress)
 
+- Supports multiple Markdown header levels
 - Extracts project title and description
 - Retrieves installation instructions
 - Parses usage examples and code snippets
@@ -13,7 +14,6 @@ A JavaScript library for parsing and extracting key information from code reposi
 ### Future implementation
 
 - Detects badges and shields from README files
-- Supports multiple Markdown header levels
 
 ### Headings parsing regex
 
@@ -38,8 +38,8 @@ Capture groups explained:
 
 ## Installation
 
-To install the Readme Parser module, you can clone this repository or include it as part of your project manually.
+To install the Readme Toolkit, you can clone this repository or include it as part of your project manually.
 
 ```bash
-git clone https://github.com/legitmattias/readme-parser.git
+git clone https://github.com/legitmattias/readme-toolkit.git
 ```
