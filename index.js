@@ -1,5 +1,11 @@
-import MarkdownParser from './lib/MarkdownParser.js'
+// Imports
+import { MarkdownParser } from './lib/MarkdownParser.js'
 
-const parser = new MarkdownParser('./README.md')
-const sections = parser.getSections()
-console.log(sections)
+// Export the core classes.
+export { MarkdownParser }
+
+// Provides a convenience function for quick parsing.
+export function parseMarkdown(filePath) {
+  const parser = new MarkdownParser(filePath)
+  return parser.getSections()
+}
