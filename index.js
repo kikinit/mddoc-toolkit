@@ -1,5 +1,5 @@
 import MarkdownParser from './lib/MarkdownParser.js'
 
-const parser = new MarkdownParser()
-const sections = parser.parseMarkdown('./README.md')
+const parser = new MarkdownParser('./README.md')
+const sections = parser.getSections()
 console.log(sections)
