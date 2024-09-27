@@ -1,5 +1,11 @@
-import MarkdownParser from './lib/MarkdownParser.js'
+import { CodeRepoReadmeParser } from './lib/CodeRepoReadmeParser.js'
 
-const parser = new MarkdownParser('./README.md')
-const sections = parser.getSections()
-console.log(sections)
+const context = new CodeRepoReadmeParser('./aux/test-readmes/README_airbnb.md')
+
+const titleAndDescription = context.getTitleAndDescription()
+const installation = context.getInstallationInstructions()
+const usageExamples = context.getUsageExamples()
+const contributionGuidelines = context.getContributionGuidelines()
+const licenseInfo = context.getLicenseInfo()
+
+console.log(titleAndDescription, installation, usageExamples, contributionGuidelines, licenseInfo)
