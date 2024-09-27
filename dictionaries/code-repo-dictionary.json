@@ -1,0 +1,6 @@
+{
+  "usage": ["usage", "examples", "how to", "guide", "tutorial"],
+  "installation": ["install", "setup"],
+  "contribution": ["contribute", "contributing", "involved"],
+  "license": ["license", "licensing", "terms", "legal"]
+}
