@@ -1,19 +1,23 @@
-# Readme Parser
+# Readme Toolkit
 
-A JavaScript library for parsing and extracting key information from code repository README files written in Markdown. This parser focuses on retrieving important sections such as the project description, installation instructions, usage examples, and more.
+A JavaScript library for extracting key sections from Markdown-based README files. It works as a general-purpose parser, with customizable extensions (contexts) for specific types of README files, such as those in code repositories. The toolkit helps retrieve important information like installation instructions, usage examples, and more, while being adaptable to different README formats.
 
-## Features (Work in Progress)
+## Features
 
-- Supports multiple Markdown header levels
-- Extracts project title and description
-- Retrieves installation instructions
-- Parses usage examples and code snippets
-- Identifies contribution guidelines
-- Extracts license information
+- General-purpose Markdown parser with support for multiple header levels (`#`, `##`, etc.)
+- Extracts key sections such as:
+  - Project title and description
+  - Installation instructions
+  - Usage examples
+  - Contribution guidelines
+  - License information
+- Context-based functionality: Extend the parser for specific needs, such as code repository or npm README files.
+- Easily customizable for specialized data extraction
 
-### Future implementation
+### Planned Features
 
 - Detects badges and shields from README files
+- Additional context-specific extraction features for various README formats
 
 ### Headings parsing regex
 
