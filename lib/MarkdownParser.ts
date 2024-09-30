@@ -4,28 +4,34 @@ import { readFileSync } from 'node:fs'
 // Import internal dependencies.
 import { HeadingDictionary } from './HeadingDictionary.js'
 
-export class MarkdownParser {
-  #content
-  #sections
-  #dictionary
+type Section = {
+  level: number
+  heading: string
+  body: string
+}
 
-  constructor (filePath, dictionaryFilePath) {
+export class MarkdownParser {
+  #content: string
+  #sections: Section[]
+  #dictionary: Record<string, string[]> | null
+
+  constructor (filePath: string, dictionaryFilePath: string | null) {
     this.#content = this.#readMarkdownFile(filePath)
     this.#sections = this.#extractSections(this.#content)
-    this.#dictionary = new HeadingDictionary(dictionaryFilePath).dictionary
+    this.#dictionary = dictionaryFilePath ? new HeadingDictionary(dictionaryFilePath).dictionary : null
   }
 
   // MAIN PARSING LOGIC
 
   // Read the markdown file into a string.
-  #readMarkdownFile (filePath) {
+  #readMarkdownFile (filePath: string): string {
     if (!filePath) {
       throw new Error('File path is not provided or is empty.')
     }
 
     try {
       return readFileSync(filePath, 'utf-8')
-    } catch (err) {
+    } catch (err: any) {
       console.error(`Error reading file: ${err.message}`)
       throw err  // Re-throwing the error after logging it.
     }
@@ -33,9 +39,9 @@ export class MarkdownParser {
 
 
   // Extract markdown headings from the content and return their levels, headings and body text.
-  #extractSections (content) {
+  #extractSections (content: string): Section[] {
     const headings = this.#extractHeadings(content)
-    const sections = []
+    const sections: Section[] = []
 
     headings.forEach((heading, index) => {
       // Find where the next heading starts, or the end of the content.
@@ -55,10 +61,10 @@ export class MarkdownParser {
   }
 
   // Extract headings with level and start index.
-  #extractHeadings (content) {
+  #extractHeadings (content: string): { level: number, text: string, startIndex: number, endIndex: number }[] {
     // Regex to match headings: both # style and underline style.
     const headingRegex = /^(#+)\s*(.*)|^(.+)\n(=+|-+)\s*$/gm
-    const headings = []
+    const headings: { level: number, text: string, startIndex: number, endIndex: number }[] = []
     let match
 
     while ((match = headingRegex.exec(content)) !== null) {
@@ -70,7 +76,7 @@ export class MarkdownParser {
         level: level,
         text: text,
         startIndex: match.index,
-        endIndex: headingRegex.lastIndex  // End of the heading.
+        endIndex: headingRegex.lastIndex
       })
     }
 
@@ -79,25 +85,25 @@ export class MarkdownParser {
 
 
   // Determine heading level (h1, h2, etc.).
-  #determineHeadingLevelFromMatch (match) {
+  #determineHeadingLevelFromMatch(match: RegExpExecArray): number {
     if (match[1]) {
       return match[1].length  // Number of `#` determines heading level.
     } else if (match[3] && match[4]) {
       const underline = match[4].trim()
       return underline[0] === '=' ? 1 : 2  // '=' for h1, '-' for h2.
     }
-    return null
+    return 0
   }
 
   // Extract body content between two heading indices
-  #extractBody (content, startIndex, endIndex) {
+  #extractBody(content: string, startIndex: number, endIndex: number): string {
     return content.slice(startIndex, endIndex)
   }
 
   // CONTEXT RELATED METHODS
 
   // Dictionary-based search for context-specific sections.
-  findSectionByKeywords (sectionType) {
+  findSectionByKeywords(sectionType: string): Section | undefined {
     if (!this.#dictionary) throw new Error('No dictionary provided for keyword search.')
 
     const keywords = this.#dictionary[sectionType] || []
@@ -107,7 +113,7 @@ export class MarkdownParser {
   }
 
   // General template method for extracting sections.
-  getSectionWithTemplate (sectionType, errorMessage) {
+  getSectionWithTemplate(sectionType: string, errorMessage: string): { title: string, body: string } {
     const section = this.findSectionByKeywords(sectionType)
     if (!section) throw new Error(errorMessage)
 
@@ -120,36 +126,31 @@ export class MarkdownParser {
   // GENERAL PUBLIC METHODS
 
   // Format a section of text, removing unnecessary characters.
-  formatText (text) {
+  formatText(text: string): string {
     return text
       .replace(/\n{3,}/g, '\n\n')  // Replace 3 or more newlines with two (preserving paragraph breaks)
       .trim()                      // Trim any leading or trailing spaces
   }
 
   // Count number of headings of each level.
-  countHeadingsByLevel () {
-    const headingCounts = {}
+  countHeadingsByLevel(): Record<number, number> {
+    const headingCounts: Record<number, number> = {}
 
     this.#sections.forEach(section => {
       const level = section.level
-
-      if (headingCounts[level]) {
-        headingCounts[level] += 1
-      } else {
-        headingCounts[level] = 1
-      }
+      headingCounts[level] = (headingCounts[level] || 0) + 1
     })
 
     return headingCounts
   }
 
   // Get all section objects with level, heading and body.
-  get sections () {
+  get sections(): Section[] {
     return this.#sections
   }
 
   // Get title of README, that is, the h1 (first h1 if multiple).
-  get title () {
+  get title(): string {
     const titleSection = this.#sections.find(section => section.level === 1)
 
     if (!titleSection) {
@@ -160,7 +161,7 @@ export class MarkdownParser {
   }
 
   // Get number of headings for the level provided (all levels if no level provided).
-  getHeadingLevels (level = null) {
+  getHeadingLevels(level: number | null = null): number | Record<number, number> {
     // Create the heading counts object
     const headingCounts = this.countHeadingsByLevel()
 
@@ -173,9 +174,10 @@ export class MarkdownParser {
   }
 
   // Get an array of the section(s) for the provided heading keyword.
-  getSectionsWithHeading (keyword) {
+  getSectionsWithHeading(keyword: string): Section[] {
     // TODO: Validate input
-    const matchingSections = this.#sections.filter(section => section.heading.toLowerCase().includes(keyword.toLowerCase()))
+    const matchingSections = this.#sections.filter(section => 
+      section.heading.toLowerCase().includes(keyword.toLowerCase()))
 
     if (matchingSections.length === 0) {
       throw new Error(`No heading found with provided keyword: '${keyword}'`)

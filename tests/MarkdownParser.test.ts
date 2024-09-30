@@ -16,7 +16,7 @@ const __dirname = dirname(__filename)
 const testFilesDir = join(__dirname, './test-files')
 
 // Helper function to load test files.
-function loadMarkdownFile (fileName) {
+function loadMarkdownFile (fileName: string): string {
   return join(testFilesDir, fileName)
 }
 

@@ -1,16 +1,19 @@
 import globals from 'globals'
 import jestPlugin from 'eslint-plugin-jest'
+import tsParser from '@typescript-eslint/parser'
+import tsPlugin from '@typescript-eslint/eslint-plugin'
 
 export default [
   {
-    // General rules for all JS files
-    files: ['**/*.js'],
+    // General rules for all JS and TS files
+    files: ['**/*.{js,ts}'],
     languageOptions: {
       ecmaVersion: 'latest',
       sourceType: 'module',  // Use ES6 modules (import/export)
+      parser: tsParser,      // Use the TypeScript parser
       globals: {
-        ...globals.node,      // Node.js environment globals like `require`, `module`, etc.
-        ...globals.es2021     // ES2021 globals like `Promise`, `Set`, etc.
+        ...globals.node,     // Node.js environment globals like `require`, `module`, etc.
+        ...globals.es2021    // ES2021 globals like `Promise`, `Set`, etc.
       }
     },
     rules: {
@@ -44,17 +47,37 @@ export default [
     }
   },
   {
-    // Specific Jest-related rules for .test.js files
-    files: ['**/*.test.js'],  // Match all test files in any folder
+    // Specific TypeScript rules
+    files: ['**/*.ts'],
     languageOptions: {
+      parser: tsParser, // Use the TypeScript parser
       globals: {
-        ...globals.node,
-        ...globals.jest,  // Use globals provided by the 'globals' package for Jest
-        jest: 'readonly'  // Manually include Jest globals (describe, test, expect)
+        ...globals.node,    // Keep Node.js environment globals
+        ...globals.es2021,  // ES2021 globals
       }
     },
     plugins: {
-      jest: jestPlugin  // Jest plugin for linting test files
+      '@typescript-eslint': tsPlugin
+    },
+    rules: {
+      '@typescript-eslint/consistent-type-definitions': ['error', 'interface'],  // Prefer interfaces over type aliases
+      '@typescript-eslint/no-unused-vars': ['error'],  // Ensure no unused variables in TypeScript
+      '@typescript-eslint/no-explicit-any': 'warn',   // Discourage using `any`
+      '@typescript-eslint/explicit-function-return-type': 'off'  // Turn off function return type rule
+    }
+  },
+  {
+    // Specific Jest-related rules for .test.ts/.test.js files
+    files: ['**/*.test.{js,ts}'],
+    languageOptions: {
+      globals: {
+        ...globals.node,
+        ...globals.jest,  // Jest globals for test files
+        jest: 'readonly'
+      }
+    },
+    plugins: {
+      jest: jestPlugin
     },
     rules: {
       'jest/no-disabled-tests': 'warn',
