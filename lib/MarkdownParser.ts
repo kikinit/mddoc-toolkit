@@ -2,9 +2,9 @@
 import { readFileSync } from 'node:fs'
 
 // Import internal dependencies.
-import { HeadingDictionary } from './HeadingDictionary.js'
+import { HeadingDictionary, Dictionary } from './HeadingDictionary.js'
 
-type Section = {
+interface Section {
   level: number
   heading: string
   body: string
@@ -13,7 +13,7 @@ type Section = {
 export class MarkdownParser {
   #content: string
   #sections: Section[]
-  #dictionary: { [key: string]: string[] } | null
+  #dictionary: Dictionary | null
 
   constructor (filePath: string, dictionaryFilePath: string | null = null) {
     this.#content = this.#readMarkdownFile(filePath)
