@@ -1,7 +1,7 @@
 // Import internal dependencies.
 import { MarkdownParser } from './MarkdownParser.js'
 
-const DEFAULT_DICTIONARY_PATH = './dictionaries/code-repo-dictionary.json'
+const DEFAULT_DICTIONARY_PATH = './dictionaries/repo-readme-dictionary.json'
 
 export class RepoReadmeProcessor extends MarkdownParser {
   constructor(filePath: string, dictionaryFilePath: string = DEFAULT_DICTIONARY_PATH) {
