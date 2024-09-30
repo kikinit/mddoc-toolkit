@@ -1,13 +1,14 @@
 {
   "name": "@kikinit/readme-toolkit",
   "version": "1.2.0",
-  "description": "A JavaScript library for extracting key sections from Markdown-based README files, offering customizable extensions (contexts) for specific use cases like code repositories.",
+  "description": "A Typescript library for extracting key sections from Markdown-based README files, offering customizable extensions (contexts) for specific use cases like code repositories.",
   "main": "index.ts",
   "type": "module",
   "scripts": {
-    "build": "tsc",
+    "build": "tsc && npm run copy-test-files",
+    "copy-test-files": "cp -r tests/test-files dist/tests/",
     "start": "node dist/index.js",
-    "test": "jest",
+    "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js",
     "manual-test": "node ./manual-test.js",
     "lint": "npx eslint . || exit 0",
     "lint:fix": "npx eslint . --fix || exit 0"
@@ -29,6 +30,7 @@
     "jest": "^29.7.0",
     "prettier": "^3.3.3",
     "ts-jest": "^29.2.5",
+    "ts-node": "^10.9.2",
     "typescript": "^5.6.2"
   }
 }
