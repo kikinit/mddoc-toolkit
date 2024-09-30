@@ -3,7 +3,7 @@ import { MarkdownParser } from './MarkdownParser.js'
 
 const DEFAULT_DICTIONARY_PATH = './dictionaries/code-repo-dictionary.json'
 
-export class CodeRepoReadmeParser extends MarkdownParser {
+export class RepoReadmeProcessor extends MarkdownParser {
   constructor(filePath: string, dictionaryFilePath: string = DEFAULT_DICTIONARY_PATH) {
     super(filePath, dictionaryFilePath)
   }
