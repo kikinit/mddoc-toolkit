@@ -176,7 +176,7 @@ export class MarkdownParser {
   // Get an array of the section(s) for the provided heading keyword.
   getSectionsWithHeading(keyword: string): Section[] {
     // TODO: Validate input
-    const matchingSections = this.#sections.filter(section => 
+    const matchingSections = this.#sections.filter(section =>
       section.heading.toLowerCase().includes(keyword.toLowerCase()))
 
     if (matchingSections.length === 0) {
