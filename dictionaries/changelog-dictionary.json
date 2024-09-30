@@ -1,0 +1,9 @@
+{
+  "unreleased": ["unreleased"],
+  "added": ["added", "new"],
+  "changed": ["changed", "updates"],
+  "deprecated": ["deprecated", "obsolete"],
+  "removed": ["removed", "deleted"],
+  "fixed": ["fixed", "bugfixes"],
+  "security": ["security", "vulnerabilities"]
+}
