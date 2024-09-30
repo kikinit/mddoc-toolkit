@@ -13,9 +13,9 @@ type Section = {
 export class MarkdownParser {
   #content: string
   #sections: Section[]
-  #dictionary: Record<string, string[]> | null
+  #dictionary: { [key: string]: string[] } | null
 
-  constructor (filePath: string, dictionaryFilePath: string | null) {
+  constructor (filePath: string, dictionaryFilePath: string | null = null) {
     this.#content = this.#readMarkdownFile(filePath)
     this.#sections = this.#extractSections(this.#content)
     this.#dictionary = dictionaryFilePath ? new HeadingDictionary(dictionaryFilePath).dictionary : null
