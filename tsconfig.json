@@ -2,6 +2,7 @@
   "compilerOptions": {
     "target": "ES6",
     "module": "esnext",
+    "moduleResolution": "Node",
     "strict": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
@@ -10,7 +11,9 @@
   },
   "include": [
     "./lib/**/*.ts",
-    "./tests/**/*.ts"
+    "./tests/**/*.ts",
+    "src/**/*.ts",
+    "tests/**/*.ts"
   ],
   "exclude": [
     "node_modules",
