@@ -41,7 +41,12 @@ jspm_packages/
 # Mac system files
 .DS_Store
 
-# Custom configurations for this project
+
+# TypeScript compiled files
+dist/
+
+# TypeScript declaration files
+*.d.ts
 
 ### Custom ###
 
