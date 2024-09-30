@@ -1,6 +1,6 @@
 {
-  "name": "@kikinit/readme-toolkit",
-  "version": "1.2.0",
+  "name": "@kikinit/mddoc-toolkit",
+  "version": "1.2.1",
   "description": "A Typescript library for extracting key sections from Markdown-based README files, offering customizable extensions (contexts) for specific use cases like code repositories.",
   "main": "index.ts",
   "type": "module",
