@@ -1,9 +1,13 @@
 import { readFileSync } from 'node:fs'
 
-export class HeadingDictionary {
-  #dictionary: { [key: string]: string[] }
+export interface Dictionary {
+  [sectionType: string]: string[]  // Maps section types to an array of keywords.
+}
 
-  constructor(data: string | { [key: string]: string[] }) {
+export class HeadingDictionary {
+  #dictionary: Dictionary
+
+  constructor(data: string | Dictionary){
     // If the data is a string, assume it's a file path and load JSON.
     if (typeof data === 'string') {
       this.#dictionary = this.#loadDictionaryFromFile(data)
@@ -14,7 +18,7 @@ export class HeadingDictionary {
   }
 
   // Load JSON dictionary data from a file.
-  #loadDictionaryFromFile(filePath: string): { [key: string]: string[] } {
+  #loadDictionaryFromFile(filePath: string): Dictionary {
     try {
       const fileContent = readFileSync(filePath, 'utf-8')
       return JSON.parse(fileContent)
@@ -28,7 +32,7 @@ export class HeadingDictionary {
   }
 
   // Get the entire dictionary.
-  get dictionary(): { [key: string]: string[] } {
+  get dictionary(): Dictionary {
     return this.#dictionary
   }
 
