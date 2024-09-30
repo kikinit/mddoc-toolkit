@@ -50,3 +50,6 @@ devnotes*
 
 # Aux dev files
 aux/
+
+# Manual test files
+manual-test.js
