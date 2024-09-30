@@ -1,23 +1,24 @@
-# Readme Toolkit
+# Markdown Documents Toolkit
 
-A JavaScript library for extracting key sections from Markdown-based README files. It works as a general-purpose parser, with customizable extensions (contexts) for specific types of README files, such as those in code repositories. The toolkit helps retrieve important information like installation instructions, usage examples, and more, while being adaptable to different README formats.
+A Typescript library for extracting key sections from Markdown-based files. It works as a general-purpose parser, with customizable extensions (contexts) for specific types of markdown files, such as READMEs in code repositories. The toolkit helps retrieve important information like installation instructions, usage examples, and more, while being adaptable to different README formats.
 
 ## Features
 
-- General-purpose Markdown parser with support for multiple header levels (`#`, `##`, etc.)
+- General-purpose Markdown processor with support for multiple heading styles (`#`, `##`, etc.) and underline notation (`===`, `---`).
 - Extracts key sections such as:
   - Project title and description
   - Installation instructions
   - Usage examples
   - Contribution guidelines
   - License information
-- Context-based functionality: Extend the parser for specific needs, such as code repository or npm README files.
-- Easily customizable for specialized data extraction
+- Context-based functionality: Extend the processor for specific document types, such as repository README files or changelogs.
+- Easily customizable for specialized data extraction tasks and additional metadata processing.
 
 ### Planned Features
 
-- Detects badges and shields from README files
-- Additional context-specific extraction features for various README formats
+- Detects and parses badges and shields from README files.
+- Additional context-specific processors for diverse documentation types (e.g., API docs, changelogs).
+- Better support for npm-specific README formats, including package metadata extraction.
 
 ### Headings parsing regex
 
