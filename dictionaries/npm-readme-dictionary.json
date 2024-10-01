@@ -1,0 +1,14 @@
+{
+  "name": ["package name", "name"],
+  "description": ["description"],
+  "installation": ["installation", "setup"],
+  "usage": ["usage", "how to use"],
+  "api": ["api", "api documentation"],
+  "cli": ["cli", "command line interface"],
+  "configuration": ["configuration", "config"],
+  "dependencies": ["dependencies"],
+  "devDependencies": ["dev dependencies", "devDependencies"],
+  "scripts": ["scripts", "build commands"],
+  "contribution": ["contribution guidelines", "contributing"],
+  "license": ["license", "licensing", "terms"]
+}
