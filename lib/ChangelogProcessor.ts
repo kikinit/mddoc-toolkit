@@ -1,16 +1,33 @@
+// Import built-in node modules for handling files and paths.
+import { dirname } from 'path'
+
 // Import internal dependencies.
 import { MarkdownParser } from './MarkdownParser.js'
 
-const DEFAULT_CHANGELOG_DICTIONARY_PATH = './dictionaries/changelog-dictionary.json'
+const DEFAULT_DICTIONARY_PATH = './dictionaries/changelog-dictionary.json'
 
 export class ChangelogProcessor extends MarkdownParser {
-  constructor(filePath: string, dictionaryFilePath: string = DEFAULT_CHANGELOG_DICTIONARY_PATH) {
-    super(filePath, dictionaryFilePath)
+  constructor(
+    filePath: string,
+    dictionaryFilePath: string = DEFAULT_DICTIONARY_PATH
+  ) {
+    // Determine if the dictionary is custom or default,
+    const isCustomDict =
+      dirname(dictionaryFilePath) !== dirname(DEFAULT_DICTIONARY_PATH)
+
+    const finalDictionaryPaths = isCustomDict
+      ? [dictionaryFilePath] // Custom dictionary, just pass it along.
+      : [dictionaryFilePath, DEFAULT_DICTIONARY_PATH] // Add to default dictionary(-ies) already in array.
+
+    super(filePath, finalDictionaryPaths)
   }
 
   // Extract "unreleased changes"
   get unreleased() {
-    return this.getSectionWithTemplate('unreleased', 'Unreleased section not found.')
+    return this.getSectionWithTemplate(
+      'unreleased',
+      'Unreleased section not found.'
+    )
   }
 
   // Extract "added features".
@@ -25,7 +42,10 @@ export class ChangelogProcessor extends MarkdownParser {
 
   // Extract "deprecated features".
   get deprecated() {
-    return this.getSectionWithTemplate('deprecated', 'No deprecated features found.')
+    return this.getSectionWithTemplate(
+      'deprecated',
+      'No deprecated features found.'
+    )
   }
 
   // Extract "removed features".
