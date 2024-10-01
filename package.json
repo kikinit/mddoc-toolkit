@@ -1,12 +1,12 @@
 {
   "name": "@kikinit/mddoc-toolkit",
-  "version": "1.2.1",
+  "version": "1.3.0",
   "description": "A Typescript library for extracting key sections from Markdown-based README files, offering customizable extensions (contexts) for specific use cases like code repositories.",
   "main": "index.ts",
   "type": "module",
   "scripts": {
-    "build": "tsc && npm run copy-test-files",
-    "copy-test-files": "cp -r tests/test-files dist/tests/",
+    "build": "tsc && npm run copy-mock-files",
+    "copy-mock-files": "cp -r tests/mock-files dist/tests/",
     "start": "node dist/index.js",
     "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js",
     "manual-test": "npm run build && node ./manual-test.js",
