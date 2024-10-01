@@ -1,6 +1,9 @@
 // Import built-in node modules for handling files and paths.
 import { dirname } from 'path'
 
+// Import third-party library.
+import semver from 'semver'
+
 // Import internal dependencies.
 import { MarkdownParser, Section } from './MarkdownParser.js'
 
@@ -12,8 +15,9 @@ export class ChangelogProcessor extends MarkdownParser {
     dictionaryFilePaths: string[] = [DEFAULT_DICTIONARY_PATH]
   ) {
     // Determine if the dictionary is custom or default
-    const isCustomDict = dictionaryFilePaths.length === 1
-      && dirname(dictionaryFilePaths[0]) !== dirname(DEFAULT_DICTIONARY_PATH)
+    const isCustomDict =
+      dictionaryFilePaths.length === 1 &&
+      dirname(dictionaryFilePaths[0]) !== dirname(DEFAULT_DICTIONARY_PATH)
 
     // If it's custom, use the custom dictionary alone, otherwise merge with default.
     const finalDictionaryPaths = isCustomDict
@@ -73,6 +77,11 @@ export class ChangelogProcessor extends MarkdownParser {
   ): Section[] {
     const sections = this.sections
     const updates: Section[] = []
+
+    // Ensure the versions are in the correct order.
+    if (semver.lt(startVersion, endVersion)) {
+      ;[startVersion, endVersion] = [endVersion, startVersion]
+    }
 
     let isInRange = false
 
