@@ -9,15 +9,16 @@ const DEFAULT_DICTIONARY_PATH = './dictionaries/changelog-dictionary.json'
 export class ChangelogProcessor extends MarkdownParser {
   constructor(
     filePath: string,
-    dictionaryFilePath: string = DEFAULT_DICTIONARY_PATH
+    dictionaryFilePaths: string[] = [DEFAULT_DICTIONARY_PATH]
   ) {
-    // Determine if the dictionary is custom or default.
-    const isCustomDict =
-      dirname(dictionaryFilePath) !== dirname(DEFAULT_DICTIONARY_PATH)
+    // Determine if the dictionary is custom or default
+    const isCustomDict = dictionaryFilePaths.length === 1
+      && dirname(dictionaryFilePaths[0]) !== dirname(DEFAULT_DICTIONARY_PATH)
 
+    // If it's custom, use the custom dictionary alone, otherwise merge with default.
     const finalDictionaryPaths = isCustomDict
-      ? [dictionaryFilePath] // Custom dictionary, just pass it along.
-      : [dictionaryFilePath, DEFAULT_DICTIONARY_PATH] // Add to default dictionary(-ies) already in array.
+      ? dictionaryFilePaths // Custom dictionary, just pass it along.
+      : [...dictionaryFilePaths, DEFAULT_DICTIONARY_PATH] // Merge with the default dictionary.
 
     super(filePath, finalDictionaryPaths)
   }
