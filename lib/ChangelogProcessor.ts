@@ -11,7 +11,7 @@ export class ChangelogProcessor extends MarkdownParser {
     filePath: string,
     dictionaryFilePath: string = DEFAULT_DICTIONARY_PATH
   ) {
-    // Determine if the dictionary is custom or default,
+    // Determine if the dictionary is custom or default.
     const isCustomDict =
       dirname(dictionaryFilePath) !== dirname(DEFAULT_DICTIONARY_PATH)
 
@@ -61,5 +61,40 @@ export class ChangelogProcessor extends MarkdownParser {
   // Extract "security updates".
   get security() {
     return this.getSectionWithTemplate('security', 'No security updates found.')
+  }
+
+  // CUSTOM PUBLIC METHODS
+
+  // Extract all changes between two specified versions in the changelog,
+  getUpdatesBetweenVersions(
+    startVersion: string,
+    endVersion: string
+  ): Section[] {
+    const sections = this.sections
+    const updates: Section[] = []
+
+    let isInRange = false
+
+    for (const section of sections) {
+      if (section.heading.includes(startVersion)) {
+        isInRange = true // Start collecting sections after finding the start version.
+      }
+
+      if (isInRange) {
+        updates.push(section)
+      }
+
+      if (section.heading.includes(endVersion)) {
+        break // Stop collecting sections once the end version is found.
+      }
+    }
+
+    if (updates.length === 0) {
+      throw new Error(
+        `No updates found between versions ${startVersion} and ${endVersion}`
+      )
+    }
+
+    return updates
   }
 }
