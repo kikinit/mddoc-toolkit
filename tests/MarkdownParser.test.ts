@@ -6,14 +6,14 @@ import { dirname, join } from 'node:path'
 import { MarkdownParser } from '../lib/MarkdownParser.js'
 
 // Declare markdown test files.
-const hashTestFile = 'test-heading-hash.md'
-const underlineTestFile = 'test-heading-underline.md'
-const comboTestFile = 'test-heading-combo.md'
+const hashMockFile = 'mock-heading-hash.md'
+const underlineMockFile = 'mock-heading-underline.md'
+const comboMockFile = 'mock-heading-combo.md'
 
 // Resolve file paths using import.meta.url.
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = dirname(__filename)
-const testFilesDir = join(__dirname, './test-files')
+const testFilesDir = join(__dirname, './mock-files')
 
 // Helper function to load test files.
 function loadMarkdownFile (fileName: string): string {
@@ -26,7 +26,7 @@ describe('MarkdownParser', () => {
 
   // Test case for reading and parsing hash-style headings.
   test('should read and parse hash-style markdown content', () => {
-    const filePath = loadMarkdownFile(hashTestFile)
+    const filePath = loadMarkdownFile(hashMockFile)
     const parser = new MarkdownParser(filePath)
     const sections = parser.sections
 
@@ -41,7 +41,7 @@ describe('MarkdownParser', () => {
 
   // Test case for getting the correct title from hash-style markdown.
   test('should return the correct title from hash-style markdown', () => {
-    const filePath = loadMarkdownFile(hashTestFile)
+    const filePath = loadMarkdownFile(hashMockFile)
     const parser = new MarkdownParser(filePath)
     const title = parser.title
 
@@ -52,7 +52,7 @@ describe('MarkdownParser', () => {
 
   // Test case for reading and parsing underline-style markdown content.
   test('should read and parse underline-style markdown content', () => {
-    const filePath = loadMarkdownFile(underlineTestFile)
+    const filePath = loadMarkdownFile(underlineMockFile)
     const parser = new MarkdownParser(filePath)
     const sections = parser.sections
 
@@ -66,7 +66,7 @@ describe('MarkdownParser', () => {
 
   // Test case for counting headings by level in underline-style markdown.
   test('should count headings by level in underline-style markdown', () => {
-    const filePath = loadMarkdownFile(underlineTestFile)
+    const filePath = loadMarkdownFile(underlineMockFile)
     const parser = new MarkdownParser(filePath)
     const counts = parser.countHeadingsByLevel()
 
@@ -82,7 +82,7 @@ describe('MarkdownParser', () => {
 
   // Test case for reading and parsing markdown content.
   test('should read and parse markdown content (combination of notations)', () => {
-    const filePath = loadMarkdownFile(comboTestFile)
+    const filePath = loadMarkdownFile(comboMockFile)
     const parser = new MarkdownParser(filePath)
     const sections = parser.sections
 
@@ -99,7 +99,7 @@ describe('MarkdownParser', () => {
 
   // Test case for getting the title.
   test('should return the correct title from combination markdown', () => {
-    const filePath = loadMarkdownFile(comboTestFile)
+    const filePath = loadMarkdownFile(comboMockFile)
     const parser = new MarkdownParser(filePath)
     const title = parser.title
 
@@ -108,7 +108,7 @@ describe('MarkdownParser', () => {
 
   // Test case for counting headings by level.
   test('should count headings by level from combination markdown', () => {
-    const filePath = loadMarkdownFile(comboTestFile)
+    const filePath = loadMarkdownFile(comboMockFile)
     const parser = new MarkdownParser(filePath)
     const counts = parser.countHeadingsByLevel()
 
@@ -123,7 +123,7 @@ describe('MarkdownParser', () => {
 
   // Test case for getting heading levels.
   test('should return the count of headings for a specific level from combination markdown', () => {
-    const filePath = loadMarkdownFile(comboTestFile)
+    const filePath = loadMarkdownFile(comboMockFile)
     const parser = new MarkdownParser(filePath)
 
     expect(parser.getHeadingLevels(1)).toBe(2)  // Two h1 headings
@@ -134,7 +134,7 @@ describe('MarkdownParser', () => {
 
   // Test case for getting sections with a matching heading keyword.
   test('should return sections with matching heading keyword from combination markdown', () => {
-    const filePath = loadMarkdownFile(comboTestFile)
+    const filePath = loadMarkdownFile(comboMockFile)
     const parser = new MarkdownParser(filePath)
     const sections = parser.getSectionsWithHeading('heading 2')
 
@@ -147,7 +147,7 @@ describe('MarkdownParser', () => {
 
   // Test case for throwing an error when no sections match the keyword.
   test('should throw an error if no sections match the keyword from combination markdown', () => {
-    const filePath = loadMarkdownFile(comboTestFile)
+    const filePath = loadMarkdownFile(comboMockFile)
     const parser = new MarkdownParser(filePath)
 
     expect(() => {
