@@ -1,6 +1,9 @@
 {
-  "usage": ["usage", "examples", "how to", "guide", "tutorial"],
-  "installation": ["install", "setup"],
-  "contribution": ["contribute", "contributing", "involved"],
-  "license": ["license", "licensing", "terms", "legal"]
+  "installation": ["install", "setup", "setting up"],
+  "usage": ["usage", "example", "how to", "guides", "tutorial", "instruction"],
+  "api": ["api","endpoint"],
+  "configuration": ["config"],
+  "dependencies": ["dependenc"],
+  "contribution": ["contribut","get involved"],
+  "license": ["licens", "legal", "conditions", "terms"]
 }

@@ -1,5 +1,5 @@
 // Import built-in node modules for handling files and paths.
-import { dirname} from 'path'
+import { dirname } from 'path'
 
 // Import internal dependencies.
 import { MarkdownParser } from './MarkdownParser.js'
@@ -36,6 +36,27 @@ export class RepoReadmeProcessor extends MarkdownParser {
   // Extract "usage examples".
   get usageExamples(): { title: string; body: string } {
     return this.getSectionWithTemplate('usage', 'Usage examples not found.')
+  }
+
+  // Extract the API documentation.
+  get api() {
+    return this.getSectionWithTemplate('api', 'API documentation not found.')
+  }
+
+  // Extract the configuration options.
+  get configuration() {
+    return this.getSectionWithTemplate(
+      'configuration',
+      'Configuration information not found.'
+    )
+  }
+
+  // Extract the dependencies list.
+  get dependencies() {
+    return this.getSectionWithTemplate(
+      'dependencies',
+      'Dependencies not found.'
+    )
   }
 
   // Extract "contribution guidelines".

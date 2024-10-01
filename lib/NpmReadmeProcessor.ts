@@ -12,7 +12,7 @@ export class NpmReadmeProcessor extends MarkdownParser {
     filePath: string,
     dictionaryFilePath: string = DEFAULT_DICTIONARY_PATH
   ) {
-    // Determine if the dictionary is custom or default,
+    // Determine if the dictionary is custom or default.
     const isCustomDict =
       dirname(dictionaryFilePath) !== dirname(DEFAULT_DICTIONARY_PATH)
 
@@ -25,34 +25,6 @@ export class NpmReadmeProcessor extends MarkdownParser {
 
   // PUBLIC METHODS UTILIZING TEMPLATE IN MARKDOWN PARSER
 
-  // Extract the package name.
-  get name() {
-    return this.getSectionWithTemplate('name', 'Package name not found.')
-  }
-
-  // Extract the description of the package.
-  get description() {
-    return this.getSectionWithTemplate('description', 'Description not found.')
-  }
-
-  // Extract the installation instructions.
-  get installation() {
-    return this.getSectionWithTemplate(
-      'installation',
-      'Installation instructions not found.'
-    )
-  }
-
-  // Extract the usage examples.
-  get usage() {
-    return this.getSectionWithTemplate('usage', 'Usage examples not found.')
-  }
-
-  // Extract the API documentation.
-  get api() {
-    return this.getSectionWithTemplate('api', 'API documentation not found.')
-  }
-
   // Extract CLI usage information.
   get cli() {
     return this.getSectionWithTemplate(
@@ -61,27 +33,12 @@ export class NpmReadmeProcessor extends MarkdownParser {
     )
   }
 
-  // Extract the configuration options.
-  get configuration() {
-    return this.getSectionWithTemplate(
-      'configuration',
-      'Configuration information not found.'
-    )
-  }
 
-  // Extract the dependencies list.
-  get dependencies() {
+  // Extract versioning details
+  get versioningInfo() {
     return this.getSectionWithTemplate(
-      'dependencies',
-      'Dependencies not found.'
-    )
-  }
-
-  // Extract the devDependencies list.
-  get devDependencies() {
-    return this.getSectionWithTemplate(
-      'devDependencies',
-      'Development dependencies not found.'
+      'versioning',
+      'Versioning information not found.'
     )
   }
 
@@ -90,22 +47,6 @@ export class NpmReadmeProcessor extends MarkdownParser {
     return this.getSectionWithTemplate(
       'scripts',
       'Scripts information not found.'
-    )
-  }
-
-  // Extract contribution guidelines.
-  get contributionGuidelines() {
-    return this.getSectionWithTemplate(
-      'contribution',
-      'Contribution guidelines not found.'
-    )
-  }
-
-  // Extract license information.
-  get licenseInfo() {
-    return this.getSectionWithTemplate(
-      'license',
-      'License information not found.'
     )
   }
 
