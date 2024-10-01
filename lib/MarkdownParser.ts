@@ -20,14 +20,15 @@ export class MarkdownParser {
     this.#sections = this.#extractSections(this.#content)
 
     // Merge dictionaries if multiple paths are passed.
-    this.#dictionary = dictionaryFilePaths.length > 0
-      ? this.#mergeDictionaries(dictionaryFilePaths)
-      : null
+    this.#dictionary =
+      dictionaryFilePaths.length > 0
+        ? this.#mergeDictionaries(dictionaryFilePaths)
+        : null
   }
 
   #mergeDictionaries(dictionaryFilePaths: string[]): Dictionary {
     let mergedDictionary: Dictionary = {}
-    dictionaryFilePaths.forEach(path => {
+    dictionaryFilePaths.forEach((path) => {
       const dictionary = new HeadingDictionary(path).dictionary
       mergedDictionary = { ...mergedDictionary, ...dictionary }
     })
@@ -50,13 +51,12 @@ export class MarkdownParser {
       } else {
         console.error('Unknown error occurred during file read')
       }
-      throw err  // Re-throwing the error after logging it.
+      throw err // Re-throwing the error after logging it.
     }
   }
 
-
   // Extract markdown headings from the content and return their levels, headings and body text.
-  #extractSections (content: string): Section[] {
+  #extractSections(content: string): Section[] {
     const headings = this.#extractHeadings(content)
     const sections: Section[] = []
 
@@ -65,12 +65,16 @@ export class MarkdownParser {
       const nextHeadingIndex = headings[index + 1]?.startIndex || content.length
 
       // Extract the body text between the current heading and the next one.
-      const bodyText = this.#extractBody(content, heading.endIndex, nextHeadingIndex)
+      const bodyText = this.#extractBody(
+        content,
+        heading.endIndex,
+        nextHeadingIndex
+      )
 
       sections.push({
         level: heading.level,
         heading: heading.text,
-        body: bodyText.trim()  // Trim to remove excess whitespace.
+        body: bodyText.trim(), // Trim to remove excess whitespace.
       })
     })
 
@@ -78,10 +82,17 @@ export class MarkdownParser {
   }
 
   // Extract headings with level and start index.
-  #extractHeadings (content: string): { level: number, text: string, startIndex: number, endIndex: number }[] {
+  #extractHeadings(
+    content: string
+  ): { level: number; text: string; startIndex: number; endIndex: number }[] {
     // Regex to match headings: both # style and underline style.
     const headingRegex = /^(#+)\s*(.*)|^(.+)\n(=+|-+)\s*$/gm
-    const headings: { level: number, text: string, startIndex: number, endIndex: number }[] = []
+    const headings: {
+      level: number
+      text: string
+      startIndex: number
+      endIndex: number
+    }[] = []
     let match
 
     while ((match = headingRegex.exec(content)) !== null) {
@@ -93,21 +104,20 @@ export class MarkdownParser {
         level: level,
         text: text,
         startIndex: match.index,
-        endIndex: headingRegex.lastIndex
+        endIndex: headingRegex.lastIndex,
       })
     }
 
     return headings
   }
 
-
   // Determine heading level (h1, h2, etc.).
   #determineHeadingLevelFromMatch(match: RegExpExecArray): number {
     if (match[1]) {
-      return match[1].length  // Number of `#` determines heading level.
+      return match[1].length // Number of `#` determines heading level.
     } else if (match[3] && match[4]) {
       const underline = match[4].trim()
-      return underline[0] === '=' ? 1 : 2  // '=' for h1, '-' for h2.
+      return underline[0] === '=' ? 1 : 2 // '=' for h1, '-' for h2.
     }
     return 0
   }
@@ -121,22 +131,28 @@ export class MarkdownParser {
 
   // Dictionary-based search for context-specific sections.
   findSectionByKeywords(sectionType: string): Section | undefined {
-    if (!this.#dictionary) throw new Error('No dictionary provided for keyword search.')
+    if (!this.#dictionary)
+      throw new Error('No dictionary provided for keyword search.')
 
     const keywords = this.#dictionary[sectionType] || []
-    return this.#sections.find(section =>
-      keywords.some(keyword => section.heading.toLowerCase().includes(keyword))
+    return this.#sections.find((section) =>
+      keywords.some((keyword) =>
+        section.heading.toLowerCase().includes(keyword)
+      )
     )
   }
 
   // General template method for extracting sections.
-  getSectionWithTemplate(sectionType: string, errorMessage: string): { title: string, body: string } {
+  getSectionWithTemplate(
+    sectionType: string,
+    errorMessage: string
+  ): { title: string; body: string } {
     const section = this.findSectionByKeywords(sectionType)
     if (!section) throw new Error(errorMessage)
 
     return {
       title: section.heading,
-      body: this.formatText(section.body)
+      body: this.formatText(section.body),
     }
   }
 
@@ -145,15 +161,15 @@ export class MarkdownParser {
   // Format a section of text, removing unnecessary characters.
   formatText(text: string): string {
     return text
-      .replace(/\n{3,}/g, '\n\n')  // Replace 3 or more newlines with two (preserving paragraph breaks)
-      .trim()                      // Trim any leading or trailing spaces
+      .replace(/\n{3,}/g, '\n\n') // Replace 3 or more newlines with two (preserving paragraph breaks)
+      .trim() // Trim any leading or trailing spaces
   }
 
   // Count number of headings of each level.
   countHeadingsByLevel(): Record<number, number> {
     const headingCounts: Record<number, number> = {}
 
-    this.#sections.forEach(section => {
+    this.#sections.forEach((section) => {
       const level = section.level
       headingCounts[level] = (headingCounts[level] || 0) + 1
     })
@@ -168,7 +184,7 @@ export class MarkdownParser {
 
   // Get title of README, that is, the h1 (first h1 if multiple).
   get title(): string {
-    const titleSection = this.#sections.find(section => section.level === 1)
+    const titleSection = this.#sections.find((section) => section.level === 1)
 
     if (!titleSection) {
       throw new Error('Title (h1) not found in the README.')
@@ -178,13 +194,15 @@ export class MarkdownParser {
   }
 
   // Get number of headings for the level provided (all levels if no level provided).
-  getHeadingLevels(level: number | null = null): number | Record<number, number> {
+  getHeadingLevels(
+    level: number | null = null
+  ): number | Record<number, number> {
     // Create the heading counts object
     const headingCounts = this.countHeadingsByLevel()
 
     // If a specific level is provided, return the count for that level.
     if (level) {
-      return headingCounts[level] || 0  // Return 0 if the level doesn't exist.
+      return headingCounts[level] || 0 // Return 0 if the level doesn't exist.
     }
 
     return headingCounts
@@ -193,12 +211,12 @@ export class MarkdownParser {
   // Get an array of the section(s) for the provided heading keyword.
   getSectionsWithHeading(keyword: string): Section[] {
     // TODO: Validate input
-    const matchingSections = this.#sections.filter(section =>
-      section.heading.toLowerCase().includes(keyword.toLowerCase()))
+    const matchingSections = this.#sections.filter((section) =>
+      section.heading.toLowerCase().includes(keyword.toLowerCase())
+    )
 
     if (matchingSections.length === 0) {
       throw new Error(`No heading found with provided keyword: '${keyword}'`)
-
     }
     return matchingSections
   }
