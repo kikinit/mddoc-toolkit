@@ -2,7 +2,7 @@
 import { dirname } from 'path'
 
 // Import internal dependencies.
-import { MarkdownParser } from './MarkdownParser.js'
+import { MarkdownParser, Section } from './MarkdownParser.js'
 
 const DEFAULT_DICTIONARY_PATH = './dictionaries/changelog-dictionary.json'
 

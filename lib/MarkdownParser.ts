@@ -4,7 +4,7 @@ import { readFileSync } from 'node:fs'
 // Import internal dependencies.
 import { HeadingDictionary, Dictionary } from './HeadingDictionary.js'
 
-interface Section {
+export interface Section {
   level: number
   heading: string
   body: string
