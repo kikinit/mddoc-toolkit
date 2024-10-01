@@ -15,24 +15,41 @@ export class MarkdownParser {
   #sections: Section[]
   #dictionary: Dictionary | null
 
-  constructor (filePath: string, dictionaryFilePath: string | null = null) {
+  constructor(filePath: string, dictionaryFilePaths: string[] = []) {
     this.#content = this.#readMarkdownFile(filePath)
     this.#sections = this.#extractSections(this.#content)
-    this.#dictionary = dictionaryFilePath ? new HeadingDictionary(dictionaryFilePath).dictionary : null
+
+    // Merge dictionaries if multiple paths are passed.
+    this.#dictionary = dictionaryFilePaths.length > 0
+      ? this.#mergeDictionaries(dictionaryFilePaths)
+      : null
+  }
+
+  #mergeDictionaries(dictionaryFilePaths: string[]): Dictionary {
+    let mergedDictionary: Dictionary = {}
+    dictionaryFilePaths.forEach(path => {
+      const dictionary = new HeadingDictionary(path).dictionary
+      mergedDictionary = { ...mergedDictionary, ...dictionary }
+    })
+    return mergedDictionary
   }
 
   // MAIN PARSING LOGIC
 
   // Read the markdown file into a string.
-  #readMarkdownFile (filePath: string): string {
+  #readMarkdownFile(filePath: string): string {
     if (!filePath) {
       throw new Error('File path is not provided or is empty.')
     }
 
     try {
       return readFileSync(filePath, 'utf-8')
-    } catch (err: any) {
-      console.error(`Error reading file: ${err.message}`)
+    } catch (err) {
+      if (err instanceof Error) {
+        console.error(`Error reading file: ${err.message}`)
+      } else {
+        console.error('Unknown error occurred during file read')
+      }
       throw err  // Re-throwing the error after logging it.
     }
   }
