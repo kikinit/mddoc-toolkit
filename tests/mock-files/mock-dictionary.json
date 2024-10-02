@@ -1,0 +1,9 @@
+{
+  "installation": ["install", "setup", "setting up"],
+  "usage": ["usage", "example", "how to", "guides", "tutorial", "instruction"],
+  "api": ["api","endpoint"],
+  "configuration": ["config"],
+  "dependencies": ["dependenc"],
+  "contribution": ["contribut","get involved"],
+  "license": ["licens", "legal", "conditions", "terms"]
+}
