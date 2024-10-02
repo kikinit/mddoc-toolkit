@@ -27,44 +27,44 @@ export class ChangelogProcessor extends MarkdownParser {
     super(filePath, finalDictionaryPaths)
   }
 
-  // Extract "unreleased changes"
-  get unreleased() {
+  // Extract unreleased changes
+  get unreleasedChanges() {
     return this.getSectionWithTemplate(
       'unreleased',
       'Unreleased section not found.'
     )
   }
 
-  // Extract "added features".
-  get added() {
+  // Extract added features.
+  get addedFeatures() {
     return this.getSectionWithTemplate('added', 'No added features found.')
   }
 
-  // Extract "changed features".
-  get changed() {
+  // Extract changed features.
+  get changedFeatures() {
     return this.getSectionWithTemplate('changed', 'No changes found.')
   }
 
-  // Extract "deprecated features".
-  get deprecated() {
+  // Extract deprecated features.
+  get deprecatedFeatures() {
     return this.getSectionWithTemplate(
       'deprecated',
       'No deprecated features found.'
     )
   }
 
-  // Extract "removed features".
-  get removed() {
+  // Extract removed features.
+  get removedFeatures() {
     return this.getSectionWithTemplate('removed', 'No removed features found.')
   }
 
-  // Extract "fixes".
-  get fixed() {
-    return this.getSectionWithTemplate('fixed', 'No fixes found.')
+  // Extract fixes and corrections.
+  get bugFixes() {
+    return this.getSectionWithTemplate('fixed', 'No bug fixes found.')
   }
 
-  // Extract "security updates".
-  get security() {
+  // Extract security updates.
+  get securityUpdates() {
     return this.getSectionWithTemplate('security', 'No security updates found.')
   }
 

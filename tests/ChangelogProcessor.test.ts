@@ -27,19 +27,19 @@ describe('ChangelogProcessor', () => {
   })
 
   test('should extract unreleased changes', () => {
-    const result = processor.unreleased
+    const result = processor.unreleasedChanges
     expect(result.title).toEqual('Unreleased')
     expect(result.body).toContain('This feature is in development')
   })
 
   test('should extract added changes', () => {
-    const result = processor.added
+    const result = processor.addedFeatures
     expect(result.title).toEqual('Added')
     expect(result.body).toContain('New authentication system')
   })
 
   test('should extract fixed changes', () => {
-    const result = processor.fixed
+    const result = processor.bugFixes
     expect(result.title).toEqual('Fixed')
     expect(result.body).toContain('Fixed a bug')
   })

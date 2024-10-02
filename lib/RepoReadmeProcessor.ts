@@ -28,7 +28,7 @@ export class RepoReadmeProcessor extends MarkdownParser {
 
   // PUBLIC METHODS UTILIZING TEMPLATE IN MARKDOWN PARSER
 
-  // Extract "installation instructions".
+  // Extract installation instructions.
   get installationInstructions(): { title: string; body: string } {
     return this.getSectionWithTemplate(
       'installation',
@@ -36,7 +36,7 @@ export class RepoReadmeProcessor extends MarkdownParser {
     )
   }
 
-  // Extract "usage examples".
+  // Extract usage examples.
   get usageExamples(): { title: string; body: string } {
     return this.getSectionWithTemplate('usage', 'Usage examples not found.')
   }
@@ -62,7 +62,7 @@ export class RepoReadmeProcessor extends MarkdownParser {
     )
   }
 
-  // Extract "contribution guidelines".
+  // Extract contribution guidelines.
   get contributionGuidelines(): { title: string; body: string } {
     return this.getSectionWithTemplate(
       'contribution',
@@ -70,7 +70,7 @@ export class RepoReadmeProcessor extends MarkdownParser {
     )
   }
 
-  // Extract "license information".
+  // Extract license information.
   get licenseInfo(): { title: string; body: string } {
     return this.getSectionWithTemplate(
       'license',
@@ -80,7 +80,7 @@ export class RepoReadmeProcessor extends MarkdownParser {
 
   // CUSTOM PUBLIC METHODS
 
-  // Extract "project title and description".
+  // Extract project title and description.
   get titleAndDescription(): { title: string; description: string } {
     const titleSection = this.sections.find((section) => section.level === 1)
 

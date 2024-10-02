@@ -27,7 +27,7 @@ export class NpmReadmeProcessor extends RepoReadmeProcessor {
   // PUBLIC METHODS UTILIZING TEMPLATE IN MARKDOWN PARSER
 
   // Extract CLI usage information.
-  get cli() {
+  get cliUsage() {
     return this.getSectionWithTemplate(
       'cli',
       'CLI usage information not found.'
@@ -44,7 +44,7 @@ export class NpmReadmeProcessor extends RepoReadmeProcessor {
   }
 
   // Extract the scripts information.
-  get scripts() {
+  get scriptsDetails() {
     return this.getSectionWithTemplate(
       'scripts',
       'Scripts information not found.'

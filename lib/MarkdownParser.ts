@@ -130,7 +130,7 @@ export class MarkdownParser {
   // CONTEXT RELATED METHODS
 
   // Dictionary-based search for context-specific sections.
-  findSectionByKeywords(sectionType: string): Section | undefined {
+  getSectionByKeywordsInDictionary(sectionType: string): Section | undefined {
     if (!this.#dictionary)
       throw new Error('No dictionary provided for keyword search.')
 
@@ -147,7 +147,7 @@ export class MarkdownParser {
     sectionType: string,
     errorMessage: string
   ): { title: string; body: string } {
-    const section = this.findSectionByKeywords(sectionType)
+    const section = this.getSectionByKeywordsInDictionary(sectionType)
     if (!section) throw new Error(errorMessage)
 
     return {
@@ -209,7 +209,7 @@ export class MarkdownParser {
   }
 
   // Get an array of the section(s) for the provided heading keyword.
-  getSectionsWithHeading(keyword: string): Section[] {
+  getSectionsByHeading(keyword: string): Section[] {
     // TODO: Validate input
     const matchingSections = this.#sections.filter((section) =>
       section.heading.toLowerCase().includes(keyword.toLowerCase())
