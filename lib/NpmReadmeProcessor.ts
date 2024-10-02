@@ -7,26 +7,51 @@ import { RepoReadmeProcessor } from './RepoReadmeProcessor.js'
 // Path to default dictionary file for this context.
 const DEFAULT_DICTIONARY_PATH = './dictionaries/npm-readme-dictionary.json'
 
+/**
+ * A class for parsing and extracting structured sections from an NPM-specific README file.
+ *
+ * The `NpmReadmeProcessor` context is a class that extends the `RepoReadmeProcessor` to
+ * provide NPM-specific functionality, such as extracting CLI usage, versioning details, and
+ * scripts information.
+ *
+ * @class NpmReadmeProcessor
+ * @extends RepoReadmeProcessor
+ * @property {string} #content - The raw Markdown content of the NPM README file.
+ * @property {Section[]} #sections - An array of parsed sections from the README file, each containing a heading and body content.
+ * @property {Dictionary | null} #dictionary - The merged dictionary for keyword-based searches, containing NPM-specific terms.
+ *
+ * @throws Will throw an error if the file cannot be read, or if any NPM-specific sections are not found.
+ */
+
 export class NpmReadmeProcessor extends RepoReadmeProcessor {
+  /**
+   * Constructs a `NpmReadmeProcessor` instance.
+   *
+   * @param {string} markdownFilePath - Path to the markdown file to parse.
+   * @param {string[]} dictionaryFilePaths - An array of paths to the dictionaries for keyword matching.
+   */
   constructor(
-    filePath: string,
+    markdownFilePath: string,
     dictionaryFilePaths: string[] = [DEFAULT_DICTIONARY_PATH]
   ) {
     // Determine if the dictionary is custom or default
-    const isCustomDict = dictionaryFilePaths.length === 1
-      && dirname(dictionaryFilePaths[0]) !== dirname(DEFAULT_DICTIONARY_PATH)
+    const isCustomDict =
+      dictionaryFilePaths.length === 1 &&
+      dirname(dictionaryFilePaths[0]) !== dirname(DEFAULT_DICTIONARY_PATH)
 
     // If it's custom, use the custom dictionary alone, otherwise merge with default.
     const finalDictionaryPaths = isCustomDict
       ? dictionaryFilePaths // Custom dictionary, just pass it along.
       : [...dictionaryFilePaths, DEFAULT_DICTIONARY_PATH] // Merge with the default dictionary.
 
-    super(filePath, finalDictionaryPaths)
+    super(markdownFilePath, finalDictionaryPaths)
   }
 
   // PUBLIC METHODS UTILIZING TEMPLATE IN MARKDOWN PARSER
 
-  // Extract CLI usage information.
+  /**
+   *Extract the CLI usage information from the README file.
+   */
   get cliUsage() {
     return this.getSectionWithTemplate(
       'cli',
@@ -34,16 +59,19 @@ export class NpmReadmeProcessor extends RepoReadmeProcessor {
     )
   }
 
-
-  // Extract versioning details
-  get versioningInfo() {
+  /**
+   *Extract the versioning details from the README file.
+   */
+  get versioningDetails() {
     return this.getSectionWithTemplate(
       'versioning',
       'Versioning information not found.'
     )
   }
 
-  // Extract the scripts information.
+  /**
+   *Extract the scripts informations from the README file.
+   */
   get scriptsDetails() {
     return this.getSectionWithTemplate(
       'scripts',

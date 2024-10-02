@@ -7,28 +7,51 @@ import { MarkdownParser } from './MarkdownParser.js'
 // Path to default dictionary file for this context.
 const DEFAULT_DICTIONARY_PATH = './dictionaries/repo-readme-dictionary.json'
 
+/**
+ * A class for parsing and extracting structured sections from a code repository's README file.
+ *
+ * The `RepoReadmeProcessor` context is a class that extends the `MarkdownParser` to provide functionality
+ * for extracting common sections in code repository README files, such as installation instructions,
+ * usage examples, API documentation, and contribution guidelines.
+ *
+ * @class RepoReadmeProcessor
+ * @extends MarkdownParser
+ * @property {string} #content - The raw Markdown content of the README file.
+ * @property {Section[]} #sections - An array of parsed sections from the README file, each containing a heading and body content.
+ * @property {Dictionary | null} #dictionary - The merged dictionary for keyword-based searches in the README file.
+ *
+ * @throws Will throw an error if the file cannot be read, or if any standard sections are not found.
+ */
+
 export class RepoReadmeProcessor extends MarkdownParser {
+  /**
+   * Constructs a new `RepoReadmeProcessor` instance.
+   *
+   * @param {string} markdownFilePath - The path to the README markdown file.
+   * @param dictionaryFilePaths - An array of paths to the dictionaries for keyword matching.
+   */
   constructor(
-    filePath: string,
+    markdownFilePath: string,
     dictionaryFilePaths: string[] = [DEFAULT_DICTIONARY_PATH]
   ) {
-
     // Determine if the dictionary is custom or default
-    const isCustomDict = dictionaryFilePaths.length === 1
-      && dirname(dictionaryFilePaths[0]) !== dirname(DEFAULT_DICTIONARY_PATH)
+    const isCustomDict =
+      dictionaryFilePaths.length === 1 &&
+      dirname(dictionaryFilePaths[0]) !== dirname(DEFAULT_DICTIONARY_PATH)
 
     // If it's custom, use the custom dictionary alone, otherwise merge with default.
     const finalDictionaryPaths = isCustomDict
       ? dictionaryFilePaths // Custom dictionary, just pass it along.
       : [...dictionaryFilePaths, DEFAULT_DICTIONARY_PATH] // Merge with the default dictionary.
 
-    super(filePath, finalDictionaryPaths)
+    super(markdownFilePath, finalDictionaryPaths)
   }
-
 
   // PUBLIC METHODS UTILIZING TEMPLATE IN MARKDOWN PARSER
 
-  // Extract installation instructions.
+  /**
+   * Extracts the installation instructions from the README file.
+   */
   get installationInstructions(): { title: string; body: string } {
     return this.getSectionWithTemplate(
       'installation',
@@ -36,17 +59,23 @@ export class RepoReadmeProcessor extends MarkdownParser {
     )
   }
 
-  // Extract usage examples.
+  /**
+   * Extracts usage examples from the README file.
+   */
   get usageExamples(): { title: string; body: string } {
     return this.getSectionWithTemplate('usage', 'Usage examples not found.')
   }
 
-  // Extract the API documentation.
+  /**
+   * Extracts the API documentation from the README file.
+   */
   get api() {
     return this.getSectionWithTemplate('api', 'API documentation not found.')
   }
 
-  // Extract the configuration options.
+  /**
+   * Extracts the configuration options from the README file.
+   */
   get configuration() {
     return this.getSectionWithTemplate(
       'configuration',
@@ -54,7 +83,9 @@ export class RepoReadmeProcessor extends MarkdownParser {
     )
   }
 
-  // Extract the dependencies list.
+  /**
+   *Extract the dependencies list from the README file.
+   */
   get dependencies() {
     return this.getSectionWithTemplate(
       'dependencies',
@@ -62,7 +93,9 @@ export class RepoReadmeProcessor extends MarkdownParser {
     )
   }
 
-  // Extract contribution guidelines.
+  /**
+   *Extract the contribution guidelines from the README file.
+   */
   get contributionGuidelines(): { title: string; body: string } {
     return this.getSectionWithTemplate(
       'contribution',
@@ -70,7 +103,9 @@ export class RepoReadmeProcessor extends MarkdownParser {
     )
   }
 
-  // Extract license information.
+  /**
+   *Extract the icense information from the README file.
+   */
   get licenseInfo(): { title: string; body: string } {
     return this.getSectionWithTemplate(
       'license',
@@ -80,7 +115,9 @@ export class RepoReadmeProcessor extends MarkdownParser {
 
   // CUSTOM PUBLIC METHODS
 
-  // Extract project title and description.
+  /**
+   *Extract the project title and description from the README file.
+   */
   get titleAndDescription(): { title: string; description: string } {
     const titleSection = this.sections.find((section) => section.level === 1)
 
