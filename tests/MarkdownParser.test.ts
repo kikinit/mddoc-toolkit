@@ -152,6 +152,6 @@ describe('MarkdownParser', () => {
 
     expect(() => {
       parser.getSectionsByHeading('non-existent heading')
-    }).toThrowError('No heading found with provided keyword: \'non-existent heading\'')
+    }).toThrow('No heading found with provided keyword: \'non-existent heading\'')
   })
 })
