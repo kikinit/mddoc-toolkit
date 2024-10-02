@@ -205,28 +205,6 @@ export class MarkdownParser {
   // CONTEXT RELATED HELPER METHODS
 
   /**
-   * Retrieves a section based on keywords from the dictionary.
-   *
-   * This method searches the parsed sections for a heading that matches any
-   * keyword associated with the given `sectionType` in the dictionary.
-   *
-   * @param {string} sectionType - Type of section to look for (based on the dictionary).
-   * @returns {Section | undefined} The matched section or undefined if not found.
-   * @throws {Error} If no dictionary is provided.
-   */
-  getSectionByKeywordsInDictionary(sectionType: string): Section | undefined {
-    if (!this.#dictionary)
-      throw new Error('No dictionary provided for keyword search.')
-
-    const keywords = this.#dictionary[sectionType] || []
-    return this.#sections.find((section) =>
-      keywords.some((keyword) =>
-        section.heading.toLowerCase().includes(keyword)
-      )
-    )
-  }
-
-  /**
    * Extracts a section using a template approach based on the dictionary.
    *
    * This method is commonly used by standard context methods (such as
@@ -238,7 +216,7 @@ export class MarkdownParser {
    * @returns {Object} The title and body of the matched section.
    * @throws {Error} If the section is not found.
    */
-  getSectionWithTemplate(
+  protected getSectionWithTemplate(
     sectionType: string,
     errorMessage: string
   ): { title: string; body: string } {
@@ -259,10 +237,32 @@ export class MarkdownParser {
    * @param {string} text - The body content to format.
    * @returns {string} The formatted text.
    */
-  formatText(text: string): string {
+  protected formatText(text: string): string {
     return text
       .replace(/\n{3,}/g, '\n\n') // Replace 3 or more newlines with two (preserving paragraph breaks)
       .trim() // Trim any leading or trailing spaces
+  }
+
+  /**
+   * Retrieves a section based on keywords from the dictionary.
+   *
+   * This method searches the parsed sections for a heading that matches any
+   * keyword associated with the given `sectionType` in the dictionary.
+   *
+   * @param {string} sectionType - Type of section to look for (based on the dictionary).
+   * @returns {Section | undefined} The matched section or undefined if not found.
+   * @throws {Error} If no dictionary is provided.
+   */
+  getSectionByKeywordsInDictionary(sectionType: string): Section | undefined {
+    if (!this.#dictionary)
+      throw new Error('No dictionary provided for keyword search.')
+
+    const keywords = this.#dictionary[sectionType] || []
+    return this.#sections.find((section) =>
+      keywords.some((keyword) =>
+        section.heading.toLowerCase().includes(keyword)
+      )
+    )
   }
 
   /**

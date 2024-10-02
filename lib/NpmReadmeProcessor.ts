@@ -80,4 +80,5 @@ export class NpmReadmeProcessor extends RepoReadmeProcessor {
   }
 
   // CUSTOM PUBLIC METHODS
+  // Add custom methods below and remove this line.
 }
