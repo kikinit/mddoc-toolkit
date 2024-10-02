@@ -190,6 +190,18 @@ export class MarkdownParser {
     return content.slice(startIndex, endIndex)
   }
 
+  /**
+   * Validates the input keyword as string.
+   *
+   * @param {string} keyword - The keyword to search for in the headings.
+   * @throws Will throw an error if the keyword is not a valid non-empty string.
+   */
+  #validateKeywordInput(keyword: string): void {
+    if (typeof keyword !== 'string' || keyword.trim() === '') {
+      throw new Error('Invalid keyword. It must be a non-empty string.')
+    }
+  }
+
   // CONTEXT RELATED HELPER METHODS
 
   /**
@@ -326,7 +338,7 @@ export class MarkdownParser {
    * @throws Will throw an error if no sections with the provided keyword are found.
    */
   getSectionsByHeading(keyword: string): Section[] {
-    // TODO: Validate input
+    this.#validateKeywordInput(keyword)
     const matchingSections = this.#sections.filter((section) =>
       section.heading.toLowerCase().includes(keyword.toLowerCase())
     )
