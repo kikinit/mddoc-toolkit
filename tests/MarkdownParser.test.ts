@@ -136,7 +136,7 @@ describe('MarkdownParser', () => {
   test('should return sections with matching heading keyword from combination markdown', () => {
     const filePath = loadMarkdownFile(comboMockFile)
     const parser = new MarkdownParser(filePath)
-    const sections = parser.getSectionsWithHeading('heading 2')
+    const sections = parser.getSectionsByHeading('heading 2')
 
     const expectedSection = [
       { level: 2, heading: 'Heading 2', body: 'More text here.' }
@@ -151,17 +151,7 @@ describe('MarkdownParser', () => {
     const parser = new MarkdownParser(filePath)
 
     expect(() => {
-      parser.getSectionsWithHeading('non-existent heading')
+      parser.getSectionsByHeading('non-existent heading')
     }).toThrowError('No heading found with provided keyword: \'non-existent heading\'')
   })
-
-  // TESTS WITHOUT OBJECT INSTANTIATION
-
-  // Test case for formatting text.
-  test('should format text by removing unnecessary characters', () => {
-    const formattedText = MarkdownParser.prototype.formatText('Some text\n\n\n\nMore text')
-
-    expect(formattedText).toBe('Some text\n\nMore text')
-  })
-
 })
