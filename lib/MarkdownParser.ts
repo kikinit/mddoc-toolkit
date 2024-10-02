@@ -35,7 +35,7 @@ export interface Section {
 export class MarkdownParser {
   #content: string
   #sections: Section[]
-  #dictionary: Dictionary | null
+  #dictionaryInstance: HeadingDictionary | null
 
   /**
    * Constructs a MarkdownParser instance.
@@ -47,26 +47,39 @@ export class MarkdownParser {
     this.#content = this.#readMarkdownFile(markdownFilePath)
     this.#sections = this.#extractSections(this.#content)
 
-    // Merge dictionaries if multiple paths are passed.
-    this.#dictionary =
-      dictionaryFilePaths.length > 0
-        ? this.#mergeDictionaries(dictionaryFilePaths)
-        : null
+    // If dictionary paths are provided, use them. Otherwise, pass an empty object to HeadingDictionary.
+    if (dictionaryFilePaths.length > 0) {
+      this.#dictionaryInstance = new HeadingDictionary(this.#mergeDictionaries(dictionaryFilePaths))
+    } else {
+      this.#dictionaryInstance = new HeadingDictionary({}) // Pass an empty dictionary.
+    }
   }
 
   /**
-   * Merges dictionaries from multiple file paths. This method is utilized when
-   * multiple contexts are involved to combine their dictionaries into one.
-   *
-   * @param {string[]} dictionaryFilePaths - Array of paths to dictionary files.
-   * @returns {Dictionary} Merged dictionary object.
-   */
-  #mergeDictionaries(dictionaryFilePaths: string[]): Dictionary {
+ * Merges multiple dictionaries into a single dictionary object.
+ *
+ * This method processes an array of file paths or inline dictionary objects,
+ * loading and combining all dictionary data into one consolidated dictionary.
+ *
+ * @param {(string | Dictionary)[]} dictionaryFilePaths - An array of file paths to dictionary files or direct dictionary objects.
+ * @returns {Dictionary} The combined dictionary containing keywords from all provided dictionaries.
+ *
+ * @throws Will throw an error if a file path is invalid or the dictionary file cannot be loaded.
+ */
+  #mergeDictionaries(dictionaryFilePaths: (string | Dictionary)[]): Dictionary {
     let mergedDictionary: Dictionary = {}
-    dictionaryFilePaths.forEach((path) => {
-      const dictionary = new HeadingDictionary(path).dictionary
-      mergedDictionary = { ...mergedDictionary, ...dictionary }
+
+    dictionaryFilePaths.forEach((pathOrDict) => {
+      if (typeof pathOrDict === 'string') {
+        // If it's a path, load the dictionary from file.
+        const dictionary = new HeadingDictionary(pathOrDict).dictionary
+        mergedDictionary = { ...mergedDictionary, ...dictionary }
+      } else {
+        // If it's an object, directly merge.
+        mergedDictionary = { ...mergedDictionary, ...pathOrDict }
+      }
     })
+
     return mergedDictionary
   }
 
@@ -229,6 +242,45 @@ export class MarkdownParser {
     }
   }
 
+  // DICTIONARY PUBLIC METHODS
+
+  /**
+   * Retrieves the full dictionary object.
+   *
+   * @returns {Dictionary | null} - The full dictionary or null if none is initialized.
+   */
+  public get dictionary(): Dictionary | null {
+    return this.#dictionaryInstance ? this.#dictionaryInstance.dictionary : null
+  }
+
+  /**
+   * Retrieves all keywords associated with a specific section type.
+   * Proxy method that uses delegation from HeadingsDictionary.
+   *
+   * @param {string} section - The section type for which to retrieve keywords.
+   * @returns {string[]} - Array of keywords associated with the section type.
+   */
+  public getKeywordsForSection(section: string): string[] {
+    if (!this.#dictionaryInstance) {
+      throw new Error('Dictionary is not initialized.')
+    }
+    return this.#dictionaryInstance.getKeywordsForSection(section)
+  }
+
+  /**
+   * Adds a keyword to the specified section type.
+   * Proxy method that uses delegation from HeadingsDictionary.
+   *
+   * @param {string} section - The section type to which the keyword will be added.
+   * @param {string} keyword - The keyword to add.
+   */
+  public addKeywordForSection(section: string, keyword: string): void {
+    if (!this.#dictionaryInstance) {
+      throw new Error('Dictionary is not initialized.')
+    }
+    this.#dictionaryInstance.addKeywordForSection(section, keyword)
+  }
+
   // GENERAL PUBLIC METHODS
 
   /**
@@ -254,10 +306,10 @@ export class MarkdownParser {
    * @throws {Error} If no dictionary is provided.
    */
   getSectionByKeywordsInDictionary(sectionType: string): Section | undefined {
-    if (!this.#dictionary)
+    if (!this.dictionary)
       throw new Error('No dictionary provided for keyword search.')
 
-    const keywords = this.#dictionary[sectionType] || []
+    const keywords = this.dictionary[sectionType] || []
     return this.#sections.find((section) =>
       keywords.some((keyword) =>
         section.heading.toLowerCase().includes(keyword)
