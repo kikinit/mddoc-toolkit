@@ -143,10 +143,6 @@ console.log('Installation Instructions with custom dictionary:', installation)
 
 Here is the API documentation for the public methods and getter properties in your library, formatted for inclusion in a README file.
 
----
-
-## API Documentation
-
 ### Convenience Functions
 
 #### Public Methods
