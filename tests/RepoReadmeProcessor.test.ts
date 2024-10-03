@@ -38,9 +38,39 @@ describe('RepoReadmeProcessor', () => {
     expect(result.body).toContain('npm start')
   })
 
+  test('should extract API documentation', () => {
+    const result = processor.api
+    expect(result.title).toEqual('API')
+    expect(result.body).toContain('/api/v1/auth')
+  })
+
+  test('should extract configuration information', () => {
+    const result = processor.configuration
+    expect(result.title).toEqual('Configuration')
+    expect(result.body).toContain('JWT_SECRET')
+  })
+
+  test('should extract dependencies list', () => {
+    const result = processor.dependencies
+    expect(result.title).toEqual('Dependencies')
+    expect(result.body).toContain('express')
+  })
+
+  test('should extract contribution guidelines', () => {
+    const result = processor.contributionGuidelines
+    expect(result.title).toEqual('Contribution')
+    expect(result.body).toContain('Contribute by creating a pull request')
+  })
+
   test('should extract license information', () => {
     const result = processor.licenseInfo
     expect(result.title).toEqual('License')
     expect(result.body).toContain('MIT License')
+  })
+
+  test('should extract the project title and description', () => {
+    const result = processor.titleAndDescription
+    expect(result.title).toEqual('Project Title')
+    expect(result.description).toContain('This repository contains the source code for the project.')
   })
 })
