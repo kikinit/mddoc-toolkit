@@ -9,6 +9,7 @@
     "copy-mock-files": "cp -r tests/mock-files dist/tests/",
     "start": "node dist/index.js",
     "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js",
+    "test:verbose": "node --experimental-vm-modules node_modules/jest/bin/jest.js --verbose --coverage",
     "manual-test": "npm run build && node ./manual-test.js",
     "lint": "npx eslint . || exit 0",
     "lint:fix": "npx eslint . --fix || exit 0"
