@@ -34,7 +34,7 @@ To import the toolkit as a module in your project, you can use npm:
 
 ```bash
 npm install @kikinit/mddoc-toolkit
-``` 
+```
 
 ## Usage Examples
 
@@ -60,7 +60,6 @@ console.log('Title of the markdown:', title)
 // Get sections with a specific heading keyword
 const apiSections = parser.getSectionsByHeading('API')
 console.log('API Sections:', apiSections)
-
 ```
 
 ### Using the Markdown Parser with Contexts
@@ -96,6 +95,7 @@ console.log('Configuration Options:', config)
 ```
 
 #### Using the Changelog Processor Context for Changelog Files
+
 ```typescript
 import { ChangelogProcessor } from 'mddoc-toolkit'
 
@@ -130,12 +130,15 @@ const repoReadmePath = './mock-repo-readme.md'
 const customDict = './custom-dictionary.json'
 
 // Initialize the processor with a custom dictionary
-const processorWithCustomDict = new RepoReadmeProcessor(repoReadmePath, [customDict])
+const processorWithCustomDict = new RepoReadmeProcessor(repoReadmePath, [
+  customDict,
+])
 
 // Extract installation instructions using the custom dictionary
 const installation = processorWithCustomDict.installationInstructions
 console.log('Installation Instructions with custom dictionary:', installation)
 ```
+
 ## API Documentation
 
 Here is the API documentation for the public methods and getter properties in your library, formatted for inclusion in a README file.
@@ -144,43 +147,75 @@ Here is the API documentation for the public methods and getter properties in yo
 
 ## API Documentation
 
+### Convenience Functions
+
+#### Public Methods
+
+- ##### `parseMarkdown(filePath: string): Section[]`
+  - **Description:** Parses the specified Markdown file and returns the extracted sections.
+  - **Parameters:**
+    - `filePath`: The path to the Markdown file.
+  - **Returns:** An array of `Section` objects representing the parsed sections from the file.
+
 ### `MarkdownParser`
 
 This class provides the core functionality for parsing and extracting structured sections from a Markdown file. It can be extended by context-specific processors such as `RepoReadmeProcessor`, `NpmReadmeProcessor`, and `ChangelogProcessor`.
 
-#### Public Methods
-
-- #### `parseMarkdown(filePath: string): Section[]`
-   - **Description:** Parses the specified Markdown file and returns the extracted sections.
-   - **Parameters:**
-     - `filePath`: The path to the Markdown file.
-   - **Returns:** An array of `Section` objects representing the parsed sections from the file.
-
 #### Getter Properties
 
-- #### `sections`
-   - **Type:** `Section[]`
-   - **Description:** Retrieves an array of all parsed sections, each containing a heading and its associated body text.
-   - **Usage:** Access it as a property: `parser.sections`.
+- ##### `sections`
 
-- #### `title`
-   - **Type:** `string`
-   - **Description:** Retrieves the first h1 title from the markdown file.
-   - **Usage:** Access it as a property: `parser.title`.
-   - **Throws:** An error if no h1 title is found.
+  - **Type:** `Section[]`
+  - **Description:** Retrieves an array of all parsed sections, each containing a heading and its associated body text.
+  - **Usage:** Access it as a property: `parser.sections`.
 
-- #### `getHeadingLevels(level: number | null): number | Record<number, number>`
-   - **Description:** Returns the count of headings for a specific level or all levels if no level is provided.
-   - **Parameters:**
-     - `level`: The level of headings to count. If `null`, counts for all levels are returned.
-   - **Returns:** The count of headings for the specified level or a record of counts for all levels.
+- ##### `title`
 
-- #### `getSectionsByHeading(keyword: string): Section[]`
-   - **Description:** Retrieves an array of sections whose headings contain the specified keyword.
-   - **Parameters:**
-     - `keyword`: The keyword to search for in section headings.
-   - **Returns:** An array of sections that contain the keyword in their headings.
-   - **Throws:** An error if no sections are found with the provided keyword.
+  - **Type:** `string`
+  - **Description:** Retrieves the first h1 title from the markdown file.
+  - **Usage:** Access it as a property: `parser.title`.
+  - **Throws:** An error if no h1 title is found.
+
+- ##### `dictionary`
+
+  - **Type:** `Dictionary | null`
+  - **Description:** Retrieves the entire dictionary object used by the processor for keyword-based section matching.
+  - **Usage:** Access it as a property: `parser.dictionary`.
+  - **Returns:** The dictionary object, or `null` if no dictionary is provided.
+
+  #### Public Methods
+
+- ##### `getHeadingLevels(level: number | null): number | Record<number, number>`
+
+  - **Description:** Returns the count of headings for a specific level or all levels if no level is provided.
+  - **Parameters:**
+    - `level`: The level of headings to count. If `null`, counts for all levels are returned.
+  - **Returns:** The count of headings for the specified level or a record of counts for all levels.
+
+- ##### `getSectionsByHeading(keyword: string): Section[]`
+
+  - **Description:** Retrieves an array of sections whose headings contain the specified keyword.
+  - **Parameters:**
+    - `keyword`: The keyword to search for in section headings.
+  - **Returns:** An array of sections that contain the keyword in their headings.
+  - **Throws:** An error if no sections are found with the provided keyword.
+
+- ##### `getKeywordsForSection(section: string): string[]`
+
+  - **Description:** Retrieves all keywords associated with a specific section type from the dictionary.
+  - **Parameters:**
+    - `section: string`: The section type for which to retrieve keywords.
+  - **Returns:** An array of keywords associated with the provided section type.
+  - **Throws:** An error if the dictionary is not initialized.
+
+- ##### `addKeywordForSection(section: string, keyword: string): void`
+  - **Description:** Adds a new keyword to the specified section type in the dictionary.
+    - If the section type does not exist, a new entry is created.
+    - If it already exists, the keyword is appended to the existing array of keywords.
+  - **Parameters:**
+    - `section: string`: The section type to which the keyword should be added.
+    - `keyword: string`: The keyword to add to the section.
+  - **Throws:** An error if the dictionary is not initialized.
 
 ### `RepoReadmeProcessor`
 
@@ -188,35 +223,39 @@ This class extends `MarkdownParser` and provides additional methods for extracti
 
 #### Public Methods
 
-- #### `installationInstructions`
-   - **Type:** `{ title: string; body: string }`
-   - **Description:** Extracts the installation instructions from the README file.
-   - **Usage:** Access it as a property: `processor.installationInstructions`.
-   - **Throws:** An error if the installation instructions section is not found.
+- ##### `installationInstructions`
 
-- #### `usageExamples`
-   - **Type:** `{ title: string; body: string }`
-   - **Description:** Extracts usage examples from the README file.
-   - **Usage:** Access it as a property: `processor.usageExamples`.
-   - **Throws:** An error if the usage examples section is not found.
+  - **Type:** `{ title: string; body: string }`
+  - **Description:** Extracts the installation instructions from the README file.
+  - **Usage:** Access it as a property: `processor.installationInstructions`.
+  - **Throws:** An error if the installation instructions section is not found.
 
-- #### `api`
-   - **Type:** `{ title: string; body: string }`
-   - **Description:** Extracts the API documentation from the README file.
-   - **Usage:** Access it as a property: `processor.api`.
-   - **Throws:** An error if the API section is not found.
+- ##### `usageExamples`
 
-- #### `dependencies`
-   - **Type:** `{ title: string; body: string }`
-   - **Description:** Extracts the dependencies list from the README file.
-   - **Usage:** Access it as a property: `processor.dependencies`.
-   - **Throws:** An error if the dependencies section is not found.
+  - **Type:** `{ title: string; body: string }`
+  - **Description:** Extracts usage examples from the README file.
+  - **Usage:** Access it as a property: `processor.usageExamples`.
+  - **Throws:** An error if the usage examples section is not found.
 
-- #### `licenseInfo`
-   - **Type:** `{ title: string; body: string }`
-   - **Description:** Extracts the license information from the README file.
-   - **Usage:** Access it as a property: `processor.licenseInfo`.
-   - **Throws:** An error if the license section is not found.
+- ##### `api`
+
+  - **Type:** `{ title: string; body: string }`
+  - **Description:** Extracts the API documentation from the README file.
+  - **Usage:** Access it as a property: `processor.api`.
+  - **Throws:** An error if the API section is not found.
+
+- ##### `dependencies`
+
+  - **Type:** `{ title: string; body: string }`
+  - **Description:** Extracts the dependencies list from the README file.
+  - **Usage:** Access it as a property: `processor.dependencies`.
+  - **Throws:** An error if the dependencies section is not found.
+
+- ##### `licenseInfo`
+  - **Type:** `{ title: string; body: string }`
+  - **Description:** Extracts the license information from the README file.
+  - **Usage:** Access it as a property: `processor.licenseInfo`.
+  - **Throws:** An error if the license section is not found.
 
 ### `NpmReadmeProcessor`
 
@@ -224,23 +263,26 @@ This class extends `RepoReadmeProcessor` and provides additional methods for ext
 
 #### Public Methods
 
-- #### `cliUsage`
-   - **Type:** `{ title: string; body: string }`
-   - **Description:** Extracts the CLI usage information from the README file.
-   - **Usage:** Access it as a property: `processor.cliUsage`.
-   - **Throws:** An error if the CLI section is not found.
+- ##### `cliUsage`
 
-- #### `versioningInfo`
-   - **Type:** `{ title: string; body: string }`
-   - **Description:** Extracts the versioning details from the README file.
-   - **Usage:** Access it as a property: `processor.versioningInfo`.
-   - **Throws:** An error if the versioning section is not found.
+  - **Type:** `{ title: string; body: string }`
+  - **Description:** Extracts the CLI usage information from the README file.
+  - **Usage:** Access it as a property: `processor.cliUsage`.
+  - **Throws:** An error if the CLI section is not found.
 
-- #### `scriptsDetails`
-   - **Type:** `{ title: string; body: string }`
-   - **Description:** Extracts the scripts information from the README file.
-   - **Usage:** Access it as a property: `processor.scriptsDetails`.
-   - **Throws:** An error if the scripts section is not found.
+- ##### `versioningInfo`
+
+  - **Type:** `{ title: string; body: string }`
+  - **Description:** Extracts the versioning details from the README file.
+  - **Usage:** Access it as a property: `processor.versioningInfo`.
+  - **Throws:** An error if the versioning section is not found.
+
+- ##### `scriptsDetails`
+
+  - **Type:** `{ title: string; body: string }`
+  - **Description:** Extracts the scripts information from the README file.
+  - **Usage:** Access it as a property: `processor.scriptsDetails`.
+  - **Throws:** An error if the scripts section is not found.
 
 ### `ChangelogProcessor`
 
@@ -248,31 +290,34 @@ This class extends `MarkdownParser` to handle changelog-specific sections, such 
 
 #### Public Methods
 
-- #### `unreleasedChanges`
-   - **Type:** `{ title: string; body: string }`
-   - **Description:** Extracts the unreleased changes from the changelog.
-   - **Usage:** Access it as a property: `changelogProcessor.unreleasedChanges`.
-   - **Throws:** An error if the unreleased section is not found.
+- ##### `unreleasedChanges`
 
-- #### `addedFeatures`
-   - **Type:** `{ title: string; body: string }`
-   - **Description:** Extracts the added features from the changelog.
-   - **Usage:** Access it as a property: `changelogProcessor.addedFeatures`.
-   - **Throws:** An error if the added section is not found.
+  - **Type:** `{ title: string; body: string }`
+  - **Description:** Extracts the unreleased changes from the changelog.
+  - **Usage:** Access it as a property: `changelogProcessor.unreleasedChanges`.
+  - **Throws:** An error if the unreleased section is not found.
 
-- #### `changedFeatures`
-   - **Type:** `{ title: string; body: string }`
-   - **Description:** Extracts the changed features from the changelog.
-   - **Usage:** Access it as a property: `changelogProcessor.changedFeatures`.
-   - **Throws:** An error if the changed section is not found.
+- ##### `addedFeatures`
 
-- #### `getUpdatesBetweenVersions(startVersion: string, endVersion: string): Section[]`
-   - **Description:** Extracts all changes between two specified versions in the changelog.
-   - **Parameters:**
-     - `startVersion`: The starting version to search for.
-     - `endVersion`: The ending version to search for.
-   - **Returns:** An array of sections representing the changes between the two versions.
-   - **Throws:** An error if no updates are found between the versions.
+  - **Type:** `{ title: string; body: string }`
+  - **Description:** Extracts the added features from the changelog.
+  - **Usage:** Access it as a property: `changelogProcessor.addedFeatures`.
+  - **Throws:** An error if the added section is not found.
+
+- ##### `changedFeatures`
+
+  - **Type:** `{ title: string; body: string }`
+  - **Description:** Extracts the changed features from the changelog.
+  - **Usage:** Access it as a property: `changelogProcessor.changedFeatures`.
+  - **Throws:** An error if the changed section is not found.
+
+- ##### `getUpdatesBetweenVersions(startVersion: string, endVersion: string): Section[]`
+  - **Description:** Extracts all changes between two specified versions in the changelog.
+  - **Parameters:**
+    - `startVersion`: The starting version to search for.
+    - `endVersion`: The ending version to search for.
+  - **Returns:** An array of sections representing the changes between the two versions.
+  - **Throws:** An error if no updates are found between the versions.
 
 ### Headings Parsing Regex
 
