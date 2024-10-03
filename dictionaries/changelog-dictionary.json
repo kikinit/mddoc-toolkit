@@ -5,5 +5,5 @@
   "deprecated": ["deprecated", "phased out", "obsolete", "retired"],
   "removed": ["removed", "deleted", "eliminated", "taken out"],
   "fixed": ["fixed", "bugfix", "resolved", "patch", "correction"],
-  "security": ["security", "vulnerabilities", "patch", "fix", "bug"]
+  "security": ["security", "vulnerabilities", "patch", "bug"]
 }
