@@ -94,7 +94,6 @@ export class HeadingDictionary {
    * @param {string} keyword - The keyword to add to the section.
    */
   addKeywordForSection(section: string, keyword: string): void {
-    // TODO: Consider changing keyword to array of keywords.
     if (!this.#dictionary[section]) {
       this.#dictionary[section] = []
     }
