@@ -5,13 +5,13 @@ A Typescript library for extracting key sections from Markdown-based files. It w
 ## Features
 
 - General-purpose Markdown processor with support for multiple heading styles (`#`, `##`, etc.) and underline notation (`===`, `---`).
+- Context-based functionality: Extend the processor for specific document types, such as repository README files or changelogs.
 - Extracts key sections such as:
   - Project title and description
   - Installation instructions
   - Usage examples
   - Contribution guidelines
   - License information
-- Context-based functionality: Extend the processor for specific document types, such as repository README files or changelogs.
 - Easily customizable for specialized data extraction tasks and additional metadata processing.
 
 ### Planned Features
@@ -146,7 +146,7 @@ console.log('Installation Instructions with custom dictionary:', installation)
 
 ## API Documentation
 
-Here is the API documentation for the public methods and getter properties in your library, formatted for inclusion in a README file.
+Here is the API documentation for the mddoc-toolkit library.
 
 ### Convenience Functions
 
