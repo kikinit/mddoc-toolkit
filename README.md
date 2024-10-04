@@ -31,8 +31,9 @@ git clone https://github.com/kikinit/mddoc-toolkit.git
 ```
 
 ### Compile the Typescript Code
+```bash
 npm run build
-
+```
 
 NOT ENABLED YET: To import the toolkit as a module in your project, you can use npm:
 
