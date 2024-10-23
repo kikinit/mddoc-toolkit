@@ -1,0 +1,19 @@
+aux/
+coverage/
+dictionaries/
+lib/
+node_modules/
+src/
+tests/
+dist/tests/
+tsconfig.json
+index.ts
+.env
+.eslintrc.js
+package-lock.json
+manual-test.js
+.gitignore
+jest.config.js
+
+# Explicitly allow dist/
+!dist/

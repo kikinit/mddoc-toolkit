@@ -35,7 +35,7 @@ git clone https://github.com/kikinit/mddoc-toolkit.git
 npm run build
 ```
 
-To import the toolkit as a module in your project, you can use npm:
+NOT ENABLED YET: To import the toolkit as a module in your project, you can use npm:
 
 ```bash
 npm install @kikinit/mddoc-toolkit

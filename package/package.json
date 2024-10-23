@@ -1,6 +1,6 @@
 {
   "name": "@kikinit/mddoc-toolkit",
-  "version": "1.0.1",
+  "version": "1.0.0",
   "description": "A TypeScript library for extracting key sections from Markdown-based README files, offering customizable extensions (contexts) for specific use cases like code repositories.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -8,8 +8,7 @@
   "files": [
     "dist",
     "README.md",
-    "LICENSE",
-    "!dist/tests/"
+    "LICENSE"
   ],
   "scripts": {
     "build": "tsc && npm run copy-mock-files",
