@@ -1,6 +1,7 @@
 // Import built-in node modules for handling files and paths.
 import { fileURLToPath } from 'node:url'
 import { dirname, join } from 'node:path'
+import { readFileSync } from 'node:fs'
 
 // Import the class module to test.
 import { MarkdownParser } from '../lib/MarkdownParser.js'
@@ -21,6 +22,12 @@ const testFilesDir = join(__dirname, './mock-files')
 // Helper function to load test files.
 function loadMockFile(fileName: string): string {
   return join(testFilesDir, fileName)
+}
+
+// Helper function to read and load file content.
+function readMockFile(fileName: string): string {
+  const filePath = loadMockFile(fileName)
+  return readFileSync(filePath, 'utf-8')
 }
 
 describe('MarkdownParser', () => {
@@ -194,5 +201,62 @@ describe('MarkdownParser - Dictionary Methods', () => {
 
     // Ensure the newly added keyword is in the dictionary.
     expect(updatedKeywords).toContain(newKeyword)
+  })
+})
+
+describe('MarkdownParser - Using markdown content directly', () => {
+
+  test('parses headings with hash notation', () => {
+    const fileContent = readMockFile('mock-heading-hash.md')
+
+    const parser = new MarkdownParser(fileContent, false)
+    const sections = parser.sections
+    expect(sections.length).toBe(3)
+
+    expect(sections[0].heading).toBe('Heading 1')
+    expect(sections[0].body).toBe('Some body text.')
+
+    expect(sections[1].heading).toBe('Heading 2')
+    expect(sections[1].body).toBe('More text here.')
+
+    expect(sections[2].heading).toBe('Heading 3')
+    expect(sections[2].body).toBe('')
+  })
+
+  test('parses headings with underline notation', () => {
+    const fileContent = readMockFile('mock-heading-underline.md')
+
+    const parser = new MarkdownParser(fileContent, false)
+    const sections = parser.sections
+    expect(sections.length).toBe(2)
+
+    expect(sections[0].heading).toBe('Heading 1')
+    expect(sections[0].body).toBe('Some body text.')
+
+    expect(sections[1].heading).toBe('Heading 2')
+    expect(sections[1].body).toBe('More text here.')
+  })
+
+  test('parses mixed heading styles', () => {
+    const fileContent = readMockFile('mock-heading-combo.md')
+
+    const parser = new MarkdownParser(fileContent, false)
+    const sections = parser.sections
+    expect(sections.length).toBe(5)
+
+    expect(sections[0].heading).toBe('Heading 1')
+    expect(sections[0].body).toBe('Some body text.')
+
+    expect(sections[1].heading).toBe('Heading 2')
+    expect(sections[1].body).toBe('More text here.')
+
+    expect(sections[2].heading).toBe('Heading 3')
+    expect(sections[2].body).toBe('')
+
+    expect(sections[3].heading).toBe('Heading 4')
+    expect(sections[3].body).toBe('Some more text here.')
+
+    expect(sections[4].heading).toBe('Heading 5')
+    expect(sections[4].body).toBe('Even more text here.')
   })
 })
