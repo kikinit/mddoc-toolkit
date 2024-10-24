@@ -1,8 +1,8 @@
 // Imports of parser and contexts
-import { MarkdownParser, Section } from './lib/MarkdownParser'
-import { RepoReadmeProcessor} from './lib/RepoReadmeProcessor'
-import { NpmReadmeProcessor} from './lib/NpmReadmeProcessor'
-import { ChangelogProcessor } from './lib/ChangelogProcessor'
+import { MarkdownParser, Section } from './lib/MarkdownParser.js'
+import { RepoReadmeProcessor} from './lib/RepoReadmeProcessor.js'
+import { NpmReadmeProcessor} from './lib/NpmReadmeProcessor.js'
+import { ChangelogProcessor } from './lib/ChangelogProcessor.js'
 
 // Export the core classes.
 export {
