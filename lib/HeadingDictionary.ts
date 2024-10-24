@@ -1,4 +1,5 @@
 import { readFileSync } from 'node:fs'
+import { join } from 'node:path'
 
 /**
  * A Dictionary that maps section types to an array of keywords.
@@ -37,7 +38,8 @@ export class HeadingDictionary {
   public constructor(data: string | Dictionary) {
     // If the data is a string, assume it's a file path and load JSON.
     if (typeof data === 'string') {
-      this.keywordDictionary = this.loadDictionaryFromFile(data)
+      const dictionaryPath = join(__dirname, '../../dictionaries', data)
+      this.keywordDictionary = this.loadDictionaryFromFile(dictionaryPath)
     } else {
       // Otherwise, assume it's an object with dictionary data.
       this.keywordDictionary = data
