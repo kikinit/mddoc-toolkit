@@ -12,6 +12,7 @@
     "!dist/tests/"
   ],
   "scripts": {
+    "clean": "rm -rf dist",
     "build": "tsc && npm run copy-mock-files",
     "copy-mock-files": "cp -r tests/mock-files dist/tests/",
     "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js",
