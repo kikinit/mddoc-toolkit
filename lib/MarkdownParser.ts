@@ -113,7 +113,9 @@ export class MarkdownParser {
    *
    * @throws Will throw an error if a file path is invalid or the dictionary file cannot be loaded.
    */
-  private mergeDictionaries(dictionaryFilePaths: (string | Dictionary)[]): Dictionary {
+  private mergeDictionaries(
+    dictionaryFilePaths: (string | Dictionary)[]
+  ): Dictionary {
     let mergedDictionary: Dictionary = {}
 
     dictionaryFilePaths.forEach((pathOrDict) => {
@@ -155,7 +157,8 @@ export class MarkdownParser {
   }
 
   /**
-   * Extracts markdown sections based on headings and body text.
+   * Extracts markdown sections based on headings and body text,
+   * including all sub-headings and their content under each section.
    *
    * @param {string} content - The markdown file content.
    * @returns {Section[]} Array of extracted sections with heading level, text, and body.
@@ -165,15 +168,36 @@ export class MarkdownParser {
     const sections: Section[] = []
 
     headings.forEach((heading, index) => {
-      // Find where the next heading starts, or the end of the content.
+      const currentLevel = heading.level
       const nextHeadingIndex = headings[index + 1]?.startIndex || content.length
 
-      // Extract the body text between the current heading and the next one.
-      const bodyText = this.extractBody(
+      // Collect content for the current heading, including any sub-headings.
+      let bodyText = this.extractBody(
         content,
         heading.endIndex,
         nextHeadingIndex
       )
+
+      // Scan for sub-headings under the current one.
+      for (let i = index + 1; i < headings.length; i++) {
+        if (headings[i].level > currentLevel) {
+          // If the sub-heading level is greater (a sub-section), include its content.
+          const subHeading = headings[i]
+          const subHeadingEndIndex =
+            headings[i + 1]?.startIndex || content.length
+          const subBodyText = this.extractBody(
+            content,
+            subHeading.endIndex,
+            subHeadingEndIndex
+          )
+
+          // Append sub-heading and its content to the current section.
+          bodyText += `\n\n## ${subHeading.text}\n\n${subBodyText}`
+        } else {
+          // If the next heading is of the same or higher level, stop collecting sub-sections.
+          break
+        }
+      }
 
       sections.push({
         level: heading.level,
@@ -244,7 +268,11 @@ export class MarkdownParser {
    * @param {number} endIndex - The end index of the body content.
    * @returns {string} Extracted body content.
    */
-  private extractBody(content: string, startIndex: number, endIndex: number): string {
+  private extractBody(
+    content: string,
+    startIndex: number,
+    endIndex: number
+  ): string {
     return content.slice(startIndex, endIndex)
   }
 
@@ -350,7 +378,9 @@ export class MarkdownParser {
    * @returns {Section | undefined} The matched section or undefined if not found.
    * @throws {Error} If no dictionary is provided.
    */
-  public getSectionByKeywordsInDictionary(sectionType: string): Section | undefined {
+  public getSectionByKeywordsInDictionary(
+    sectionType: string
+  ): Section | undefined {
     if (!this.dictionary)
       throw new Error('No dictionary provided for keyword search.')
 
@@ -394,7 +424,9 @@ export class MarkdownParser {
    * @throws {Error} If no h1 heading is found.
    */
   public get title(): string {
-    const titleSection = this.parsedSections.find((section) => section.level === 1)
+    const titleSection = this.parsedSections.find(
+      (section) => section.level === 1
+    )
 
     if (!titleSection) {
       throw new Error('Title (h1) not found in the README.')
