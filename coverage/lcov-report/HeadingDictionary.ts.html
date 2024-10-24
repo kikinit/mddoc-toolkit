@@ -23,9 +23,9 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">75% </span>
+                <span class="strong">71.42% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>12/16</span>
+                <span class='fraction'>10/14</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">75% </span>
+                <span class="strong">71.42% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>12/16</span>
+                <span class='fraction'>10/14</span>
             </div>
         
             
@@ -191,7 +191,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">82x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -204,11 +203,11 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">82x</span>
+<span class="cline-any cline-yes">85x</span>
 <span class="cline-any cline-yes">48x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">34x</span>
+<span class="cline-any cline-yes">37x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -221,7 +220,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">4x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">48x</span>
 <span class="cline-any cline-yes">48x</span>
 <span class="cline-any cline-yes">48x</span>
@@ -261,6 +260,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -287,13 +287,12 @@ export interface Dictionary {
  * keyword-based searches within parsed sections.
  *
  * @class HeadingDictionary
- * @property {Dictionary} #dictionary - The dictionary of keywords, either loaded from a file or passed as an object.
+ * @property {Dictionary} private dictionary - The dictionary of keywords, either loaded from a file or passed as an object.
  *
  * @throws Will throw an error if the dictionary file cannot be loaded or is malformed.
  */
-&nbsp;
 export class HeadingDictionary {
-  #dictionary: Dictionary
+  private keywordDictionary: Dictionary
 &nbsp;
   /**
    * Constructs a new `HeadingDictionary` instance.
@@ -304,13 +303,13 @@ export class HeadingDictionary {
    * @param {string | Dictionary} data - Either a file path to a JSON dictionary or a `Dictionary` object.
    * @throws Will throw an error if the dictionary file cannot be loaded.
    */
-  constructor(data: string | Dictionary) {
+  public constructor(data: string | Dictionary) {
     // If the data is a string, assume it's a file path and load JSON.
     if (typeof data === 'string') {
-      this.#dictionary = this.#loadDictionaryFromFile(data)
+      this.keywordDictionary = this.loadDictionaryFromFile(data)
     } else {
       // Otherwise, assume it's an object with dictionary data.
-      this.#dictionary = data
+      this.keywordDictionary = data
     }
   }
 &nbsp;
@@ -323,7 +322,7 @@ export class HeadingDictionary {
    * @returns {Dictionary} The parsed dictionary object.
    * @throws Will throw an error if the file cannot be read or parsed.
    */
-  #loadDictionaryFromFile(filePath: string): Dictionary {
+  private loadDictionaryFromFile(filePath: string): Dictionary {
     try {
       const fileContent = readFileSync(filePath, 'utf-8')
       return JSON.parse(fileContent)
@@ -342,7 +341,7 @@ export class HeadingDictionary {
    * @returns {Dictionary} The full dictionary object containing all section types and their associated keywords.
    */
   get dictionary(): Dictionary {
-    return this.#dictionary
+    return this.keywordDictionary
   }
 &nbsp;
   /**
@@ -351,9 +350,10 @@ export class HeadingDictionary {
    * @param {string} section - The section type for which to retrieve keywords.
    * @returns {string[]} An array of keywords associated with the provided section type.
    */
-  getKeywordsForSection(section: string): string[] {
-    return this.#dictionary[section] || <span class="branch-1 cbranch-no" title="branch not covered" >[]</span>
+  public getKeywordsForSection(section: string): string[] {
+    return this.keywordDictionary[section] || <span class="branch-1 cbranch-no" title="branch not covered" >[]</span>
   }
+&nbsp;
   /**
    * Adds a new keyword to the specified section type.
    *
@@ -362,11 +362,11 @@ export class HeadingDictionary {
    * @param {string} section - The section type to which the keyword should be added.
    * @param {string} keyword - The keyword to add to the section.
    */
-  addKeywordForSection(section: string, keyword: string): void {
-    <span class="missing-if-branch" title="if path not taken" >I</span>if (!this.#dictionary[section]) {
-<span class="cstat-no" title="statement not covered" >      this.#dictionary[section] = []</span>
+  public addKeywordForSection(section: string, keyword: string): void {
+    <span class="missing-if-branch" title="if path not taken" >I</span>if (!this.keywordDictionary[section]) {
+<span class="cstat-no" title="statement not covered" >      this.keywordDictionary[section] = []</span>
     }
-    this.#dictionary[section].push(keyword)
+    this.keywordDictionary[section].push(keyword)
   }
 }
 &nbsp;</pre></td></tr></table></pre>
@@ -376,7 +376,7 @@ export class HeadingDictionary {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2024-10-03T00:36:44.909Z
+                at 2024-10-24T20:51:05.640Z
             </div>
         <script src="prettify.js"></script>
         <script>

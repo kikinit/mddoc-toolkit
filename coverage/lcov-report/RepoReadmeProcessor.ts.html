@@ -30,9 +30,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">66.66% </span>
+                <span class="strong">57.14% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>4/6</span>
+                <span class='fraction'>4/7</span>
             </div>
         
             
@@ -196,7 +196,8 @@
 <a name='L131'></a><a href='#L131'>131</a>
 <a name='L132'></a><a href='#L132'>132</a>
 <a name='L133'></a><a href='#L133'>133</a>
-<a name='L134'></a><a href='#L134'>134</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L134'></a><a href='#L134'>134</a>
+<a name='L135'></a><a href='#L135'>135</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -204,6 +205,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -361,8 +363,9 @@ export class RepoReadmeProcessor extends MarkdownParser {
    * @param {string} markdownFilePath - The path to the README markdown file.
    * @param dictionaryFilePaths - An array of paths to the dictionaries for keyword matching.
    */
-  constructor(
-    markdownFilePath: string,
+  public constructor(
+    markdownInput: string,
+    isFilePath: boolean = <span class="branch-0 cbranch-no" title="branch not covered" >true,</span>
     dictionaryFilePaths: string[] = [DEFAULT_DICTIONARY_PATH]
   ) {
     // Determine if the dictionary is custom or default
@@ -375,7 +378,7 @@ export class RepoReadmeProcessor extends MarkdownParser {
       ? <span class="branch-0 cbranch-no" title="branch not covered" >dictionaryFilePaths </span>// Custom dictionary, just pass it along.
       : [...dictionaryFilePaths, DEFAULT_DICTIONARY_PATH] // Merge with the default dictionary.
 &nbsp;
-    super(markdownFilePath, finalDictionaryPaths)
+    super(markdownInput, isFilePath, finalDictionaryPaths)
   }
 &nbsp;
   // PUBLIC METHODS UTILIZING TEMPLATE IN MARKDOWN PARSER
@@ -383,7 +386,7 @@ export class RepoReadmeProcessor extends MarkdownParser {
   /**
    * Extracts the installation instructions from the README file.
    */
-  get installationInstructions(): { title: string; body: string } {
+  public get installationInstructions(): { title: string; body: string } {
     return this.getSectionWithTemplate(
       'installation',
       'Installation instructions not found.'
@@ -393,21 +396,21 @@ export class RepoReadmeProcessor extends MarkdownParser {
   /**
    * Extracts usage examples from the README file.
    */
-  get usageExamples(): { title: string; body: string } {
+  public get usageExamples(): { title: string; body: string } {
     return this.getSectionWithTemplate('usage', 'Usage examples not found.')
   }
 &nbsp;
   /**
    * Extracts the API documentation from the README file.
    */
-  get api() {
+  public get api() {
     return this.getSectionWithTemplate('api', 'API documentation not found.')
   }
 &nbsp;
   /**
    * Extracts the configuration options from the README file.
    */
-  get configuration() {
+  public get configuration() {
     return this.getSectionWithTemplate(
       'configuration',
       'Configuration information not found.'
@@ -417,7 +420,7 @@ export class RepoReadmeProcessor extends MarkdownParser {
   /**
    *Extract the dependencies list from the README file.
    */
-  get dependencies() {
+  public get dependencies() {
     return this.getSectionWithTemplate(
       'dependencies',
       'Dependencies not found.'
@@ -427,7 +430,7 @@ export class RepoReadmeProcessor extends MarkdownParser {
   /**
    *Extract the contribution guidelines from the README file.
    */
-  get contributionGuidelines(): { title: string; body: string } {
+  public get contributionGuidelines(): { title: string; body: string } {
     return this.getSectionWithTemplate(
       'contribution',
       'Contribution guidelines not found.'
@@ -437,7 +440,7 @@ export class RepoReadmeProcessor extends MarkdownParser {
   /**
    *Extract the icense information from the README file.
    */
-  get licenseInfo(): { title: string; body: string } {
+  public get licenseInfo(): { title: string; body: string } {
     return this.getSectionWithTemplate(
       'license',
       'License information not found.'
@@ -449,7 +452,7 @@ export class RepoReadmeProcessor extends MarkdownParser {
   /**
    *Extract the project title and description from the README file.
    */
-  get titleAndDescription(): { title: string; description: string } {
+  public get titleAndDescription(): { title: string; description: string } {
     const titleSection = this.sections.find((section) =&gt; section.level === 1)
 &nbsp;
     <span class="missing-if-branch" title="if path not taken" >I</span>if (!titleSection) {
@@ -469,7 +472,7 @@ export class RepoReadmeProcessor extends MarkdownParser {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2024-10-03T00:36:44.909Z
+                at 2024-10-24T20:51:05.640Z
             </div>
         <script src="prettify.js"></script>
         <script>
