@@ -27,7 +27,8 @@ export class RepoReadmeProcessor extends MarkdownParser {
   /**
    * Constructs a new `RepoReadmeProcessor` instance.
    *
-   * @param {string} markdownFilePath - The path to the README markdown file.
+   * @param {string} markdownInput - Path to the markdown file or raw markdown content.
+   * @param {boolean} isFilePath - Whether the first argument is a file path (default: true).
    * @param dictionaryFilePaths - An array of paths to the dictionaries for keyword matching.
    */
   public constructor(
