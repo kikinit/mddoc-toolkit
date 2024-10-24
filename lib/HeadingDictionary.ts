@@ -18,13 +18,12 @@ export interface Dictionary {
  * keyword-based searches within parsed sections.
  *
  * @class HeadingDictionary
- * @property {Dictionary} #dictionary - The dictionary of keywords, either loaded from a file or passed as an object.
+ * @property {Dictionary} private dictionary - The dictionary of keywords, either loaded from a file or passed as an object.
  *
  * @throws Will throw an error if the dictionary file cannot be loaded or is malformed.
  */
-
 export class HeadingDictionary {
-  #dictionary: Dictionary
+  private keywordDictionary: Dictionary
 
   /**
    * Constructs a new `HeadingDictionary` instance.
@@ -35,13 +34,13 @@ export class HeadingDictionary {
    * @param {string | Dictionary} data - Either a file path to a JSON dictionary or a `Dictionary` object.
    * @throws Will throw an error if the dictionary file cannot be loaded.
    */
-  constructor(data: string | Dictionary) {
+  public constructor(data: string | Dictionary) {
     // If the data is a string, assume it's a file path and load JSON.
     if (typeof data === 'string') {
-      this.#dictionary = this.#loadDictionaryFromFile(data)
+      this.keywordDictionary = this.loadDictionaryFromFile(data)
     } else {
       // Otherwise, assume it's an object with dictionary data.
-      this.#dictionary = data
+      this.keywordDictionary = data
     }
   }
 
@@ -54,7 +53,7 @@ export class HeadingDictionary {
    * @returns {Dictionary} The parsed dictionary object.
    * @throws Will throw an error if the file cannot be read or parsed.
    */
-  #loadDictionaryFromFile(filePath: string): Dictionary {
+  private loadDictionaryFromFile(filePath: string): Dictionary {
     try {
       const fileContent = readFileSync(filePath, 'utf-8')
       return JSON.parse(fileContent)
@@ -73,7 +72,7 @@ export class HeadingDictionary {
    * @returns {Dictionary} The full dictionary object containing all section types and their associated keywords.
    */
   get dictionary(): Dictionary {
-    return this.#dictionary
+    return this.keywordDictionary
   }
 
   /**
@@ -82,9 +81,10 @@ export class HeadingDictionary {
    * @param {string} section - The section type for which to retrieve keywords.
    * @returns {string[]} An array of keywords associated with the provided section type.
    */
-  getKeywordsForSection(section: string): string[] {
-    return this.#dictionary[section] || []
+  public getKeywordsForSection(section: string): string[] {
+    return this.keywordDictionary[section] || []
   }
+
   /**
    * Adds a new keyword to the specified section type.
    *
@@ -93,10 +93,10 @@ export class HeadingDictionary {
    * @param {string} section - The section type to which the keyword should be added.
    * @param {string} keyword - The keyword to add to the section.
    */
-  addKeywordForSection(section: string, keyword: string): void {
-    if (!this.#dictionary[section]) {
-      this.#dictionary[section] = []
+  public addKeywordForSection(section: string, keyword: string): void {
+    if (!this.keywordDictionary[section]) {
+      this.keywordDictionary[section] = []
     }
-    this.#dictionary[section].push(keyword)
+    this.keywordDictionary[section].push(keyword)
   }
 }

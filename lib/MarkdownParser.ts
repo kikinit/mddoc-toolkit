@@ -33,9 +33,9 @@ export interface Section {
  * @throws Will throw an error if the file cannot be read.
  */
 export class MarkdownParser {
-  #content: string
-  #sections: Section[]
-  #dictionaryInstance: HeadingDictionary | null
+  private content: string
+  private parsedSections: Section[]
+  private dictionaryInstance: HeadingDictionary | null
 
   /**
    * Constructs a MarkdownParser instance.
@@ -46,23 +46,23 @@ export class MarkdownParser {
    * @param {boolean} isFilePath - Whether the first argument is a file path (default: true).
    * @param {string[]} dictionaryFilePaths - Array of paths to dictionary files to be merged (optional).
    */
-  constructor(
+  public constructor(
     markdownInput: string,
     isFilePath: boolean = true,
     dictionaryFilePaths: string[] = []
   ) {
-    this.#content = isFilePath
-      ? this.#readMarkdownFile(markdownInput)
-      : this.#validateMarkdownContent(markdownInput)
+    this.content = isFilePath
+      ? this.readMarkdownFile(markdownInput)
+      : this.validateMarkdownContent(markdownInput)
 
-    this.#sections = this.#extractSections(this.#content)
+    this.parsedSections = this.extractSections(this.content)
 
     if (dictionaryFilePaths.length > 0) {
-      this.#dictionaryInstance = new HeadingDictionary(
-        this.#mergeDictionaries(dictionaryFilePaths)
+      this.dictionaryInstance = new HeadingDictionary(
+        this.mergeDictionaries(dictionaryFilePaths)
       )
     } else {
-      this.#dictionaryInstance = new HeadingDictionary({})
+      this.dictionaryInstance = new HeadingDictionary({})
     }
   }
 
@@ -72,7 +72,7 @@ export class MarkdownParser {
    * @param {string} filePath - The path to the markdown file to validate.
    * @throws Will throw an error if the file path is empty or exceeds the maximum length.
    */
-  #validateFilePath(filePath: string): void {
+  private validateFilePath(filePath: string): void {
     if (!filePath) {
       throw new Error('File path is not provided or is empty.')
     }
@@ -93,7 +93,7 @@ export class MarkdownParser {
    * @returns {string} - Returns valid markdown content.
    * @throws {Error} - If content is invalid.
    */
-  #validateMarkdownContent(content: string): string {
+  private validateMarkdownContent(content: string): string {
     if (typeof content !== 'string' || content.trim() === '') {
       throw new Error(
         'Invalid markdown content provided. It must be a non-empty string.'
@@ -113,7 +113,7 @@ export class MarkdownParser {
    *
    * @throws Will throw an error if a file path is invalid or the dictionary file cannot be loaded.
    */
-  #mergeDictionaries(dictionaryFilePaths: (string | Dictionary)[]): Dictionary {
+  private mergeDictionaries(dictionaryFilePaths: (string | Dictionary)[]): Dictionary {
     let mergedDictionary: Dictionary = {}
 
     dictionaryFilePaths.forEach((pathOrDict) => {
@@ -139,8 +139,8 @@ export class MarkdownParser {
    * @returns {string} The content of the markdown file as a string.
    * @throws Will throw an error if the file path is invalid or the file cannot be read.
    */
-  #readMarkdownFile(filePath: string): string {
-    this.#validateFilePath(filePath)
+  private readMarkdownFile(filePath: string): string {
+    this.validateFilePath(filePath)
 
     try {
       return readFileSync(filePath, 'utf-8')
@@ -160,8 +160,8 @@ export class MarkdownParser {
    * @param {string} content - The markdown file content.
    * @returns {Section[]} Array of extracted sections with heading level, text, and body.
    */
-  #extractSections(content: string): Section[] {
-    const headings = this.#extractHeadings(content)
+  private extractSections(content: string): Section[] {
+    const headings = this.extractHeadings(content)
     const sections: Section[] = []
 
     headings.forEach((heading, index) => {
@@ -169,7 +169,7 @@ export class MarkdownParser {
       const nextHeadingIndex = headings[index + 1]?.startIndex || content.length
 
       // Extract the body text between the current heading and the next one.
-      const bodyText = this.#extractBody(
+      const bodyText = this.extractBody(
         content,
         heading.endIndex,
         nextHeadingIndex
@@ -191,7 +191,7 @@ export class MarkdownParser {
    * @param {string} content - The markdown content to scan for headings.
    * @returns {Array} Array of objects containing heading level, text, and start/end indices.
    */
-  #extractHeadings(
+  private extractHeadings(
     content: string
   ): { level: number; text: string; startIndex: number; endIndex: number }[] {
     // Regex to match headings: both # style and underline style.
@@ -205,7 +205,7 @@ export class MarkdownParser {
     let match
 
     while ((match = headingRegex.exec(content)) !== null) {
-      const level = this.#determineHeadingLevelFromMatch(match)
+      const level = this.determineHeadingLevelFromMatch(match)
       const text = match[1] ? match[2].trim() : match[3].trim()
 
       // Capture both start and end indices for the heading.
@@ -226,7 +226,7 @@ export class MarkdownParser {
    * @param {RegExpExecArray} match - Regex match object.
    * @returns {number} The heading level (1 for h1, 2 for h2, etc.).
    */
-  #determineHeadingLevelFromMatch(match: RegExpExecArray): number {
+  private determineHeadingLevelFromMatch(match: RegExpExecArray): number {
     if (match[1]) {
       return match[1].length // Number of `#` determines heading level.
     } else if (match[3] && match[4]) {
@@ -244,7 +244,7 @@ export class MarkdownParser {
    * @param {number} endIndex - The end index of the body content.
    * @returns {string} Extracted body content.
    */
-  #extractBody(content: string, startIndex: number, endIndex: number): string {
+  private extractBody(content: string, startIndex: number, endIndex: number): string {
     return content.slice(startIndex, endIndex)
   }
 
@@ -254,7 +254,7 @@ export class MarkdownParser {
    * @param {string} keyword - The keyword to search for in the headings.
    * @throws Will throw an error if the keyword is not a valid non-empty string.
    */
-  #validateKeywordInput(keyword: string): void {
+  private validateKeywordInput(keyword: string): void {
     if (typeof keyword !== 'string' || keyword.trim() === '') {
       throw new Error('Invalid keyword. It must be a non-empty string.')
     }
@@ -295,7 +295,7 @@ export class MarkdownParser {
    * @returns {Dictionary | null} - The full dictionary or null if none is initialized.
    */
   public get dictionary(): Dictionary | null {
-    return this.#dictionaryInstance ? this.#dictionaryInstance.dictionary : null
+    return this.dictionaryInstance ? this.dictionaryInstance.dictionary : null
   }
 
   /**
@@ -306,10 +306,10 @@ export class MarkdownParser {
    * @returns {string[]} - Array of keywords associated with the section type.
    */
   public getKeywordsForSection(section: string): string[] {
-    if (!this.#dictionaryInstance) {
+    if (!this.dictionaryInstance) {
       throw new Error('Dictionary is not initialized.')
     }
-    return this.#dictionaryInstance.getKeywordsForSection(section)
+    return this.dictionaryInstance.getKeywordsForSection(section)
   }
 
   /**
@@ -320,10 +320,10 @@ export class MarkdownParser {
    * @param {string} keyword - The keyword to add.
    */
   public addKeywordForSection(section: string, keyword: string): void {
-    if (!this.#dictionaryInstance) {
+    if (!this.dictionaryInstance) {
       throw new Error('Dictionary is not initialized.')
     }
-    this.#dictionaryInstance.addKeywordForSection(section, keyword)
+    this.dictionaryInstance.addKeywordForSection(section, keyword)
   }
 
   // GENERAL PUBLIC METHODS
@@ -350,12 +350,12 @@ export class MarkdownParser {
    * @returns {Section | undefined} The matched section or undefined if not found.
    * @throws {Error} If no dictionary is provided.
    */
-  getSectionByKeywordsInDictionary(sectionType: string): Section | undefined {
+  public getSectionByKeywordsInDictionary(sectionType: string): Section | undefined {
     if (!this.dictionary)
       throw new Error('No dictionary provided for keyword search.')
 
     const keywords = this.dictionary[sectionType] || []
-    return this.#sections.find((section) =>
+    return this.parsedSections.find((section) =>
       keywords.some((keyword) =>
         section.heading.toLowerCase().includes(keyword)
       )
@@ -367,10 +367,10 @@ export class MarkdownParser {
    *
    * @returns {Record<number, number>} A record with heading levels as keys and counts as values.
    */
-  countHeadingsByLevel(): Record<number, number> {
+  public countHeadingsByLevel(): Record<number, number> {
     const headingCounts: Record<number, number> = {}
 
-    this.#sections.forEach((section) => {
+    this.parsedSections.forEach((section) => {
       const level = section.level
       headingCounts[level] = (headingCounts[level] || 0) + 1
     })
@@ -383,8 +383,8 @@ export class MarkdownParser {
    *
    * @returns {Section[]} An array of section objects.
    */
-  get sections(): Section[] {
-    return this.#sections
+  public get sections(): Section[] {
+    return this.parsedSections
   }
 
   /**
@@ -393,8 +393,8 @@ export class MarkdownParser {
    * @returns {string} The title of the README.
    * @throws {Error} If no h1 heading is found.
    */
-  get title(): string {
-    const titleSection = this.#sections.find((section) => section.level === 1)
+  public get title(): string {
+    const titleSection = this.parsedSections.find((section) => section.level === 1)
 
     if (!titleSection) {
       throw new Error('Title (h1) not found in the README.')
@@ -410,7 +410,7 @@ export class MarkdownParser {
    * @param {number | null} [level=null] - The level of heading to count.
    * @returns {number | Record<number, number>} The count for the specified level or all levels.
    */
-  getHeadingLevels(
+  public getHeadingLevels(
     level: number | null = null
   ): number | Record<number, number> {
     // Create the heading counts object
@@ -434,9 +434,9 @@ export class MarkdownParser {
    * @returns {Section[]} An array of sections that contain the keyword in their headings.
    * @throws Will throw an error if no sections with the provided keyword are found.
    */
-  getSectionsByHeading(keyword: string): Section[] {
-    this.#validateKeywordInput(keyword)
-    const matchingSections = this.#sections.filter((section) =>
+  public getSectionsByHeading(keyword: string): Section[] {
+    this.validateKeywordInput(keyword)
+    const matchingSections = this.parsedSections.filter((section) =>
       section.heading.toLowerCase().includes(keyword.toLowerCase())
     )
 

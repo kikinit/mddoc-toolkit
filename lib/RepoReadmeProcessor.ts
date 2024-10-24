@@ -30,7 +30,7 @@ export class RepoReadmeProcessor extends MarkdownParser {
    * @param {string} markdownFilePath - The path to the README markdown file.
    * @param dictionaryFilePaths - An array of paths to the dictionaries for keyword matching.
    */
-  constructor(
+  public constructor(
     markdownInput: string,
     isFilePath: boolean = true,
     dictionaryFilePaths: string[] = [DEFAULT_DICTIONARY_PATH]
@@ -53,7 +53,7 @@ export class RepoReadmeProcessor extends MarkdownParser {
   /**
    * Extracts the installation instructions from the README file.
    */
-  get installationInstructions(): { title: string; body: string } {
+  public get installationInstructions(): { title: string; body: string } {
     return this.getSectionWithTemplate(
       'installation',
       'Installation instructions not found.'
@@ -63,21 +63,21 @@ export class RepoReadmeProcessor extends MarkdownParser {
   /**
    * Extracts usage examples from the README file.
    */
-  get usageExamples(): { title: string; body: string } {
+  public get usageExamples(): { title: string; body: string } {
     return this.getSectionWithTemplate('usage', 'Usage examples not found.')
   }
 
   /**
    * Extracts the API documentation from the README file.
    */
-  get api() {
+  public get api() {
     return this.getSectionWithTemplate('api', 'API documentation not found.')
   }
 
   /**
    * Extracts the configuration options from the README file.
    */
-  get configuration() {
+  public get configuration() {
     return this.getSectionWithTemplate(
       'configuration',
       'Configuration information not found.'
@@ -87,7 +87,7 @@ export class RepoReadmeProcessor extends MarkdownParser {
   /**
    *Extract the dependencies list from the README file.
    */
-  get dependencies() {
+  public get dependencies() {
     return this.getSectionWithTemplate(
       'dependencies',
       'Dependencies not found.'
@@ -97,7 +97,7 @@ export class RepoReadmeProcessor extends MarkdownParser {
   /**
    *Extract the contribution guidelines from the README file.
    */
-  get contributionGuidelines(): { title: string; body: string } {
+  public get contributionGuidelines(): { title: string; body: string } {
     return this.getSectionWithTemplate(
       'contribution',
       'Contribution guidelines not found.'
@@ -107,7 +107,7 @@ export class RepoReadmeProcessor extends MarkdownParser {
   /**
    *Extract the icense information from the README file.
    */
-  get licenseInfo(): { title: string; body: string } {
+  public get licenseInfo(): { title: string; body: string } {
     return this.getSectionWithTemplate(
       'license',
       'License information not found.'
@@ -119,7 +119,7 @@ export class RepoReadmeProcessor extends MarkdownParser {
   /**
    *Extract the project title and description from the README file.
    */
-  get titleAndDescription(): { title: string; description: string } {
+  public get titleAndDescription(): { title: string; description: string } {
     const titleSection = this.sections.find((section) => section.level === 1)
 
     if (!titleSection) {

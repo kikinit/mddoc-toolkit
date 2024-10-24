@@ -30,7 +30,7 @@ export class NpmReadmeProcessor extends RepoReadmeProcessor {
    * @param {string} markdownFilePath - Path to the markdown file to parse.
    * @param {string[]} dictionaryFilePaths - An array of paths to the dictionaries for keyword matching.
    */
-  constructor(
+  public constructor(
     markdownInput: string,
     isFilePath: boolean = true,
     dictionaryFilePaths: string[] = [DEFAULT_DICTIONARY_PATH]
@@ -53,7 +53,7 @@ export class NpmReadmeProcessor extends RepoReadmeProcessor {
   /**
    *Extract the CLI usage information from the README file.
    */
-  get cliUsage() {
+  public get cliUsage() {
     return this.getSectionWithTemplate(
       'cli',
       'CLI usage information not found.'
@@ -63,7 +63,7 @@ export class NpmReadmeProcessor extends RepoReadmeProcessor {
   /**
    *Extract the versioning details from the README file.
    */
-  get versioningDetails() {
+  public get versioningDetails() {
     return this.getSectionWithTemplate(
       'versioning',
       'Versioning information not found.'
@@ -73,7 +73,7 @@ export class NpmReadmeProcessor extends RepoReadmeProcessor {
   /**
    *Extract the scripts informations from the README file.
    */
-  get scriptsDetails() {
+  public get scriptsDetails() {
     return this.getSectionWithTemplate(
       'scripts',
       'Scripts information not found.'

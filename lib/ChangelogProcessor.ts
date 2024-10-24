@@ -32,7 +32,7 @@ export class ChangelogProcessor extends MarkdownParser {
    * @param {string} markdownFilePath - The path to the README markdown file.
    * @param dictionaryFilePaths - An array of paths to the dictionaries for keyword matching.
    */
-  constructor(
+  public constructor(
     markdownInput: string,
     isFilePath: boolean = true,
     dictionaryFilePaths: string[] = [DEFAULT_DICTIONARY_PATH]
@@ -53,7 +53,7 @@ export class ChangelogProcessor extends MarkdownParser {
   /**
    *Extract information about unreleased changes from the changelog.
    */
-  get unreleasedChanges() {
+  public get unreleasedChanges() {
     return this.getSectionWithTemplate(
       'unreleased',
       'Unreleased section not found.'
@@ -63,21 +63,21 @@ export class ChangelogProcessor extends MarkdownParser {
   /**
    *Extract information about added features from the changelog.
    */
-  get addedFeatures() {
+  public get addedFeatures() {
     return this.getSectionWithTemplate('added', 'No added features found.')
   }
 
   /**
    *Extract information about changed features from the changelog.
    */
-  get changedFeatures() {
+  public get changedFeatures() {
     return this.getSectionWithTemplate('changed', 'No changes found.')
   }
 
   /**
    *Extract information about deprecated features from the changelog.
    */
-  get deprecatedFeatures() {
+  public get deprecatedFeatures() {
     return this.getSectionWithTemplate(
       'deprecated',
       'No deprecated features found.'
@@ -87,21 +87,21 @@ export class ChangelogProcessor extends MarkdownParser {
   /**
    *Extract information about removed features from the changelog.
    */
-  get removedFeatures() {
+  public get removedFeatures() {
     return this.getSectionWithTemplate('removed', 'No removed features found.')
   }
 
   /**
    *Extract information about fixes and corrections from the changelog.
    */
-  get bugFixes() {
+  public get bugFixes() {
     return this.getSectionWithTemplate('fixed', 'No bug fixes found.')
   }
 
   /**
    *Extract information about security updatesfrom the changelog.
    */
-  get securityUpdates() {
+  public get securityUpdates() {
     return this.getSectionWithTemplate('security', 'No security updates found.')
   }
 
@@ -121,7 +121,7 @@ export class ChangelogProcessor extends MarkdownParser {
    *
    * @throws {Error} If no updates are found between the specified versions.
    */
-  getUpdatesBetweenVersions(
+  public getUpdatesBetweenVersions(
     startVersion: string,
     endVersion: string
   ): Section[] {
