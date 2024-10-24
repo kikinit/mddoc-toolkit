@@ -13,6 +13,7 @@ A Typescript library for extracting key sections from Markdown-based files. It w
   - Contribution guidelines
   - License information
 - Easily customizable for specialized data extraction tasks and additional metadata processing.
+- Supports both file-based and direct markdown content processing.
 
 ### Planned Features
 
@@ -24,7 +25,13 @@ A Typescript library for extracting key sections from Markdown-based files. It w
 
 ## Installation
 
-To install the Readme Toolkit, you can clone this repository or include it as part of your project manually.
+To import the toolkit as a module in your project, you can use npm:
+
+```bash
+npm install @kikinit/mddoc-toolkit
+```
+
+To install the Readme Toolkit manually, you can clone this repository or include it as part of your project.
 
 ```bash
 git clone https://github.com/kikinit/mddoc-toolkit.git
@@ -35,15 +42,50 @@ git clone https://github.com/kikinit/mddoc-toolkit.git
 npm run build
 ```
 
-To import the toolkit as a module in your project, you can use npm:
+## Quick Start
 
-```bash
-npm install @kikinit/mddoc-toolkit
+A quick start guide to get an idea of how the library works and how you could use it in your project.
+
+### Example Usage with `RepoReadmeProcessor`
+
+```typescript
+import { RepoReadmeProcessor } from 'mddoc-toolkit'
+
+// Example input: The file path of a README.md file
+const readmePath = './readme.md'
+
+// Initialize the RepoReadmeProcessor using file path
+const repoProcessor = new RepoReadmeProcessor(readmePath, true) // 'true' indicates it's a file path; 'false' for direct markdown content.
+
+// Extract installation instructions
+const installation = repoProcessor.installationInstructions
+console.log('Installation Instructions:', installation)
+
+// Extract usage examples
+const usage = repoProcessor.usageExamples
+console.log('Usage Examples:', usage)
 ```
 
-## Usage Examples
+### Example Output:
+
+```json
+{
+  "installationInstructions": {
+    "title": "Installation",
+    "body": "To install, run the following commands:\n```bash\nnpm install\n```"
+  },
+  "usageExamples": {
+    "title": "Usage",
+    "body": "To use the project, run:\n```bash\nnpm start\n```"
+  }
+}
+```
+
+## Extended Usage Examples
 
 ### Using the Markdown Parser without Contexts for Basic Markdown Parsing
+
+#### Using the Markdown Parser using filepath
 
 ```typescript
 import { MarkdownParser } from 'mddoc-toolkit'
@@ -51,8 +93,8 @@ import { MarkdownParser } from 'mddoc-toolkit'
 // Example markdown file path
 const markdownFilePath = './README.md'
 
-// Initialize the parser
-const parser = new MarkdownParser(markdownFilePath)
+// Initialize the parser using a file path
+const parser = new MarkdownParser(markdownFilePath, true) // 'true' indicates it is a file path
 
 // Get all sections
 const sections = parser.sections
@@ -61,10 +103,30 @@ console.log('Parsed sections:', sections)
 // Get the title of the markdown (first h1)
 const title = parser.title
 console.log('Title of the markdown:', title)
+```
 
-// Get sections with a specific heading keyword
-const apiSections = parser.getSectionsByHeading('API')
-console.log('API Sections:', apiSections)
+#### Using MarkdownParser for Direct Markdown Content
+
+```typescript
+import { MarkdownParser } from 'mddoc-toolkit'
+
+// Example markdown content
+const markdownContent = `
+# My Project
+## Installation
+Run npm install
+`
+
+// Initialize the parser with direct markdown content
+const parser = new MarkdownParser(markdownContent, false) // 'false' indicates it's direct content
+
+// Get all sections
+const sections = parser.sections
+console.log('Parsed sections:', sections)
+
+// Get the title of the markdown (first h1)
+const title = parser.title
+console.log('Title of the markdown:', title)
 ```
 
 ### Using the Markdown Parser with Contexts
@@ -76,11 +138,11 @@ By instantiating the parser with a specific context, you can extract additional 
 ```typescript
 import { RepoReadmeProcessor } from 'mddoc-toolkit'
 
-// Example repo README file
+// Example repo README file path
 const repoReadmePath = './mock-repo-readme.md'
 
-// Initialize the RepoReadmeProcessor
-const repoProcessor = new RepoReadmeProcessor(repoReadmePath)
+// Initialize the RepoReadmeProcessor using file path
+const repoProcessor = new RepoReadmeProcessor(repoReadmePath, true) // 'true' indicates it is a file path
 
 // Get installation instructions
 const installation = repoProcessor.installationInstructions
@@ -89,14 +151,6 @@ console.log('Installation Instructions:', installation)
 // Get usage examples
 const usage = repoProcessor.usageExamples
 console.log('Usage Examples:', usage)
-
-// Get API documentation
-const api = repoProcessor.api
-console.log('API Documentation:', api)
-
-// Get configuration options
-const config = repoProcessor.configuration
-console.log('Configuration Options:', config)
 ```
 
 #### Using the Changelog Processor Context for Changelog Files
@@ -104,11 +158,11 @@ console.log('Configuration Options:', config)
 ```typescript
 import { ChangelogProcessor } from 'mddoc-toolkit'
 
-// Example Changelog file
+// Example Changelog file path
 const changelogPath = './CHANGELOG.md'
 
-// Initialize the ChangelogProcessor
-const changelogProcessor = new ChangelogProcessor(changelogPath)
+// Initialize the ChangelogProcessor using file path
+const changelogProcessor = new ChangelogProcessor(changelogPath, true) // 'true' indicates it is a file path
 
 // Get unreleased changes
 const unreleasedChanges = changelogProcessor.unreleasedChanges
@@ -135,7 +189,7 @@ const repoReadmePath = './mock-repo-readme.md'
 const customDict = './custom-dictionary.json'
 
 // Initialize the processor with a custom dictionary
-const processorWithCustomDict = new RepoReadmeProcessor(repoReadmePath, [
+const processorWithCustomDict = new RepoReadmeProcessor(repoReadmePath, true, [ // 'true' indicates it is a file path
   customDict,
 ])
 
