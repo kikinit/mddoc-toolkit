@@ -40,32 +40,85 @@ export class MarkdownParser {
   /**
    * Constructs a MarkdownParser instance.
    *
-   * @param {string} markdownFilePath - Path to the markdown file to parse.
+   * Either provide a markdown file path or raw markdown content, and the optional custom dictionary file path.
+   *
+   * @param {string} markdownInput - Path to the markdown file or raw markdown content.
+   * @param {boolean} isFilePath - Whether the first argument is a file path (default: true).
    * @param {string[]} dictionaryFilePaths - Array of paths to dictionary files to be merged (optional).
    */
-  constructor(markdownFilePath: string, dictionaryFilePaths: string[] = []) {
-    this.#content = this.#readMarkdownFile(markdownFilePath)
+  constructor(
+    markdownInput: string,
+    isFilePath: boolean = true,
+    dictionaryFilePaths: string[] = []
+  ) {
+    this.#content = isFilePath
+      ? this.#readMarkdownFile(markdownInput)
+      : this.#validateMarkdownContent(markdownInput)
+
     this.#sections = this.#extractSections(this.#content)
 
-    // If dictionary paths are provided, use them. Otherwise, pass an empty object to HeadingDictionary.
     if (dictionaryFilePaths.length > 0) {
-      this.#dictionaryInstance = new HeadingDictionary(this.#mergeDictionaries(dictionaryFilePaths))
+      this.#dictionaryInstance = new HeadingDictionary(
+        this.#mergeDictionaries(dictionaryFilePaths)
+      )
     } else {
-      this.#dictionaryInstance = new HeadingDictionary({}) // Pass an empty dictionary.
+      this.#dictionaryInstance = new HeadingDictionary({})
     }
   }
 
   /**
- * Merges multiple dictionaries into a single dictionary object.
- *
- * This method processes an array of file paths or inline dictionary objects,
- * loading and combining all dictionary data into one consolidated dictionary.
- *
- * @param {(string | Dictionary)[]} dictionaryFilePaths - An array of file paths to dictionary files or direct dictionary objects.
- * @returns {Dictionary} The combined dictionary containing keywords from all provided dictionaries.
- *
- * @throws Will throw an error if a file path is invalid or the dictionary file cannot be loaded.
- */
+   * Validates the provided file path.
+   *
+   * @param {string} filePath - The path to the markdown file to validate.
+   * @throws Will throw an error if the file path is empty or exceeds the maximum length.
+   */
+  #validateFilePath(filePath: string): void {
+    if (!filePath) {
+      throw new Error('File path is not provided or is empty.')
+    }
+
+    const maxPathLength = 255
+    if (filePath.length > maxPathLength) {
+      throw new Error(
+        `File path is too long. Maximum allowed length is ${maxPathLength} characters.`
+      )
+    }
+  }
+
+  /**
+   * Validates the provided markdown content.
+   * Ensures that the content is not too long or malformed as a string.
+   *
+   * @param {string} content - Markdown content string.
+   * @returns {string} - Returns valid markdown content.
+   * @throws {Error} - If content is invalid.
+   */
+  #validateMarkdownContent(content: string): string {
+    const maxLength = 100000
+    if (typeof content !== 'string' || content.trim() === '') {
+      throw new Error(
+        'Invalid markdown content provided. It must be a non-empty string.'
+      )
+    }
+    if (content.length > maxLength) {
+      throw new Error(
+        `Markdown content is too long. Maximum allowed length is ${maxLength} characters.`
+      )
+    }
+    return content
+  }
+
+  /**
+   * Merges multiple dictionaries into a single dictionary object.
+   *
+   * This method processes an array of file paths or inline dictionary objects,
+   * loading and combining all dictionary data into one consolidated dictionary.
+   *
+   * @param {(string | Dictionary)[]} dictionaryFilePaths - An array of file paths to dictionary files or direct dictionary objects.
+   * @returns {Dictionary} The combined dictionary containing keywords from all provided dictionaries.
+   *
+   * @throws Will throw an error if a file path is invalid or the dictionary file cannot be loaded.
+   */
   #mergeDictionaries(dictionaryFilePaths: (string | Dictionary)[]): Dictionary {
     let mergedDictionary: Dictionary = {}
 
@@ -88,14 +141,12 @@ export class MarkdownParser {
   /**
    * Reads the markdown file content as a string.
    *
-   * @param {string} filePath - Path to the markdown file.
+   * @param {string} filePath - The path to the markdown file to read.
    * @returns {string} The content of the markdown file as a string.
-   * @throws Will throw an error if the file cannot be read.
+   * @throws Will throw an error if the file path is invalid or the file cannot be read.
    */
   #readMarkdownFile(filePath: string): string {
-    if (!filePath) {
-      throw new Error('File path is not provided or is empty.')
-    }
+    this.#validateFilePath(filePath)
 
     try {
       return readFileSync(filePath, 'utf-8')
@@ -105,7 +156,7 @@ export class MarkdownParser {
       } else {
         console.error('Unknown error occurred during file read')
       }
-      throw err // Re-throwing the error after logging it.
+      throw err
     }
   }
 

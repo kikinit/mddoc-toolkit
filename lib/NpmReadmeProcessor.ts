@@ -31,7 +31,8 @@ export class NpmReadmeProcessor extends RepoReadmeProcessor {
    * @param {string[]} dictionaryFilePaths - An array of paths to the dictionaries for keyword matching.
    */
   constructor(
-    markdownFilePath: string,
+    markdownInput: string,
+    isFilePath: boolean = true,
     dictionaryFilePaths: string[] = [DEFAULT_DICTIONARY_PATH]
   ) {
     // Determine if the dictionary is custom or default
@@ -44,7 +45,7 @@ export class NpmReadmeProcessor extends RepoReadmeProcessor {
       ? dictionaryFilePaths // Custom dictionary, just pass it along.
       : [...dictionaryFilePaths, DEFAULT_DICTIONARY_PATH] // Merge with the default dictionary.
 
-    super(markdownFilePath, finalDictionaryPaths)
+    super(markdownInput, isFilePath, finalDictionaryPaths)
   }
 
   // PUBLIC METHODS UTILIZING TEMPLATE IN MARKDOWN PARSER
