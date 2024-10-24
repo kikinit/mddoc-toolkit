@@ -87,22 +87,16 @@ export class MarkdownParser {
 
   /**
    * Validates the provided markdown content.
-   * Ensures that the content is not too long or malformed as a string.
+   * Ensures that the content is not malformed as a string.
    *
    * @param {string} content - Markdown content string.
    * @returns {string} - Returns valid markdown content.
    * @throws {Error} - If content is invalid.
    */
   #validateMarkdownContent(content: string): string {
-    const maxLength = 100000
     if (typeof content !== 'string' || content.trim() === '') {
       throw new Error(
         'Invalid markdown content provided. It must be a non-empty string.'
-      )
-    }
-    if (content.length > maxLength) {
-      throw new Error(
-        `Markdown content is too long. Maximum allowed length is ${maxLength} characters.`
       )
     }
     return content
