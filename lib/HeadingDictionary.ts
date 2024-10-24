@@ -39,7 +39,7 @@ export class HeadingDictionary {
   public constructor(data: string | Dictionary) {
     // If the data is a string, assume it's a file path and load JSON.
     if (typeof data === 'string') {
-      const dictionaryPath = this.resolvePath(import.meta.url, `../../${data}`)
+      const dictionaryPath = this.resolvePath(`../${data}`)
       this.keywordDictionary = this.loadDictionaryFromFile(dictionaryPath)
     } else {
       this.keywordDictionary = data
@@ -105,12 +105,11 @@ export class HeadingDictionary {
   /**
    * Resolves the absolute path to a file in ESM-compatible environments.
    *
-   * @param metaUrl - The `import.meta.url` of the calling file.
    * @param relativePath - The relative path to the target file from the calling file's directory.
    * @returns The resolved absolute path to the target file.
    */
-  private resolvePath(metaUrl: string, relativePath: string): string {
-    const __filename = fileURLToPath(metaUrl)
+  private resolvePath(relativePath: string): string {
+    const __filename = fileURLToPath(import.meta.url)
     const __dirname = dirname(__filename)
     return join(__dirname, relativePath)
   }
