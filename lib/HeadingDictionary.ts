@@ -1,5 +1,6 @@
 import { readFileSync } from 'node:fs'
-import { join } from 'node:path'
+import { fileURLToPath } from 'node:url'
+import { dirname, join } from 'node:path'
 
 /**
  * A Dictionary that maps section types to an array of keywords.
@@ -38,10 +39,9 @@ export class HeadingDictionary {
   public constructor(data: string | Dictionary) {
     // If the data is a string, assume it's a file path and load JSON.
     if (typeof data === 'string') {
-      const dictionaryPath = join(__dirname, '../../dictionaries', data)
+      const dictionaryPath = this.resolvePath(import.meta.url, `../../${data}`)
       this.keywordDictionary = this.loadDictionaryFromFile(dictionaryPath)
     } else {
-      // Otherwise, assume it's an object with dictionary data.
       this.keywordDictionary = data
     }
   }
@@ -73,7 +73,7 @@ export class HeadingDictionary {
    *
    * @returns {Dictionary} The full dictionary object containing all section types and their associated keywords.
    */
-  get dictionary(): Dictionary {
+  public get dictionary(): Dictionary {
     return this.keywordDictionary
   }
 
@@ -100,5 +100,18 @@ export class HeadingDictionary {
       this.keywordDictionary[section] = []
     }
     this.keywordDictionary[section].push(keyword)
+  }
+
+  /**
+   * Resolves the absolute path to a file in ESM-compatible environments.
+   *
+   * @param metaUrl - The `import.meta.url` of the calling file.
+   * @param relativePath - The relative path to the target file from the calling file's directory.
+   * @returns The resolved absolute path to the target file.
+   */
+  private resolvePath(metaUrl: string, relativePath: string): string {
+    const __filename = fileURLToPath(metaUrl)
+    const __dirname = dirname(__filename)
+    return join(__dirname, relativePath)
   }
 }
