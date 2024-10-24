@@ -23,7 +23,7 @@ describe('RepoReadmeProcessor', () => {
 
   beforeEach(() => {
     const filePath = loadMarkdownFile(repoMockFile)
-    processor = new RepoReadmeProcessor(filePath)
+    processor = new RepoReadmeProcessor(filePath, true)
   })
 
   test('should extract installation instructions', () => {

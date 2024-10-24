@@ -23,7 +23,7 @@ describe('ChangelogProcessor', () => {
 
   beforeEach(() => {
     const filePath = loadMarkdownFile(changelogMockFile)
-    processor = new ChangelogProcessor(filePath)
+    processor = new ChangelogProcessor(filePath, true)
   })
 
   test('should extract unreleased changes', () => {
@@ -78,7 +78,7 @@ describe('ChangelogProcessor', () => {
 
   test('should get updates between two close versions 2.2.1 and 2.2.0', () => {
     const filePath = loadMarkdownFile(changelogMockFile)
-    const processor = new ChangelogProcessor(filePath)
+    const processor = new ChangelogProcessor(filePath, true)
 
     const updates = processor.getUpdatesBetweenVersions('2.2.1', '2.2.0')
 

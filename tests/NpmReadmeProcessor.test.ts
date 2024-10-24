@@ -23,7 +23,7 @@ describe('NpmReadmeProcessor', () => {
 
   beforeEach(() => {
     const filePath = loadMarkdownFile(npmMockFile)
-    processor = new NpmReadmeProcessor(filePath)
+    processor = new NpmReadmeProcessor(filePath, true)
   })
 
   test('should extract CLI usage information', () => {
