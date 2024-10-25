@@ -12,6 +12,7 @@
   },
   "include": [
     "./lib/**/*.ts",
+    "lib/types/**/*.ts",
     "./tests/**/*.ts",
     "src/**/*.ts",
     "tests/**/*.ts",
