@@ -293,7 +293,16 @@ export class MarkdownParser {
     errorMessage: string
   ): { title: string; body: string }[] {
     const sections = this.getSectionsByKeywordsInDictionary(sectionType)
-    if (sections.length === 0) throw new Error(errorMessage)
+
+    // If no sections match, return an error message as a single array item.
+    if (sections.length === 0) {
+      return [
+        {
+          title: `${sectionType.charAt(0).toUpperCase() + sectionType.slice(1)} Not Found`,
+          body: errorMessage,
+        },
+      ]
+    }
 
     // Format each matching section.
     return sections.map((section) => ({

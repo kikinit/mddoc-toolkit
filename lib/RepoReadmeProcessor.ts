@@ -72,14 +72,14 @@ export class RepoReadmeProcessor extends MarkdownParser {
   /**
    * Extracts the API documentation from the README file.
    */
-  public get api() {
+  public get api(): { title: string; body: string }[] {
     return this.getSectionsWithTemplate('api', 'API documentation not found.')
   }
 
   /**
    * Extracts the configuration options from the README file.
    */
-  public get configuration() {
+  public get configuration(): { title: string; body: string }[] {
     return this.getSectionsWithTemplate(
       'configuration',
       'Configuration information not found.'
@@ -89,7 +89,7 @@ export class RepoReadmeProcessor extends MarkdownParser {
   /**
    *Extract the dependencies list from the README file.
    */
-  public get dependencies() {
+  public get dependencies(): { title: string; body: string }[] {
     return this.getSectionsWithTemplate(
       'dependencies',
       'Dependencies not found.'
