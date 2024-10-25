@@ -163,12 +163,11 @@ export class MarkdownParser {
         content,
         heading.endIndex,
         nextHeadingIndex
-      )
+      ).trim()
 
-      // Scan for sub-headings under the current one.
+      // Process sub-headings under the current one.
       for (let i = index + 1; i < headings.length; i++) {
         if (headings[i].level > currentLevel) {
-          // If the sub-heading level is greater (a sub-section), include its content.
           const subHeading = headings[i]
           const subHeadingEndIndex =
             headings[i + 1]?.startIndex || content.length
@@ -176,19 +175,20 @@ export class MarkdownParser {
             content,
             subHeading.endIndex,
             subHeadingEndIndex
-          )
+          ).trim()
 
-          // Append sub-heading and its content to the current section.
+          // Append sub-heading to the body with a consistent double newline
           bodyText += `\n\n## ${subHeading.text}\n\n${subBodyText}`
         } else {
-          // If the next heading is of the same or higher level, stop collecting sub-sections.
-          break
+          break // Stop collecting if the next heading is of the same or higher level.
         }
       }
+
+      // Apply formatText on the final section body to ensure consistent spacing.
       sections.push({
         level: heading.level,
-        heading: heading.text,
-        body: bodyText.trim(),
+        heading: this.formatText(heading.text),
+        body: this.formatText(bodyText),
       })
     })
 
