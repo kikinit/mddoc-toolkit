@@ -5,7 +5,8 @@ import { dirname } from 'path'
 import semver from 'semver'
 
 // Import internal dependencies.
-import { MarkdownParser, Section } from './MarkdownParser.js'
+import { Section } from './types/types.js'
+import { MarkdownParser} from './MarkdownParser.js'
 
 // Path to default dictionary file for this context.
 const DEFAULT_DICTIONARY_PATH = './dictionaries/changelog-dictionary.json'

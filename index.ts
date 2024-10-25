@@ -1,5 +1,6 @@
 // Imports of parser and contexts
-import { MarkdownParser, Section } from './lib/MarkdownParser.js'
+import { Section } from './lib/types/types.js'
+import { MarkdownParser } from './lib/MarkdownParser.js'
 import { RepoReadmeProcessor} from './lib/RepoReadmeProcessor.js'
 import { NpmReadmeProcessor} from './lib/NpmReadmeProcessor.js'
 import { ChangelogProcessor } from './lib/ChangelogProcessor.js'

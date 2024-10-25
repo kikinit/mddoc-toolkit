@@ -2,6 +2,7 @@
 import { dirname } from 'path'
 
 // Import internal dependencies.
+import { Section } from './types/types.js'
 import { MarkdownParser } from './MarkdownParser.js'
 
 // Path to default dictionary file for this context.
@@ -118,14 +119,20 @@ export class RepoReadmeProcessor extends MarkdownParser {
   // CUSTOM PUBLIC METHODS
 
   /**
-   * Extract the project title and description from the README file.
+   * Extract the project title, description, and level from the README file.
+   * Returns a Section object with level, heading, and body.
    */
-  public get titleAndDescription(): { title: string; description: string } {
-    const firstSection = this.extractFirstSection()
+  public get titleAndDescription(): Section {
+    const titleSection = this.extractFirstSection()
+
+    if (!titleSection) {
+      throw new Error('Title (h1) not found in the README.')
+    }
 
     return {
-      title: firstSection.heading,
-      description: firstSection.body,
+      level: titleSection.level,
+      heading: titleSection.heading,
+      body: this.formatText(titleSection.body),
     }
   }
 }
