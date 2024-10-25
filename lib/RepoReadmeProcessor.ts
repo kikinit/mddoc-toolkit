@@ -54,8 +54,8 @@ export class RepoReadmeProcessor extends MarkdownParser {
   /**
    * Extracts the installation instructions from the README file.
    */
-  public get installationInstructions(): { title: string; body: string } {
-    return this.getSectionWithTemplate(
+  public get installationInstructions(): { title: string; body: string }[] {
+    return this.getSectionsWithTemplate(
       'installation',
       'Installation instructions not found.'
     )
@@ -64,22 +64,22 @@ export class RepoReadmeProcessor extends MarkdownParser {
   /**
    * Extracts usage examples from the README file.
    */
-  public get usageExamples(): { title: string; body: string } {
-    return this.getSectionWithTemplate('usage', 'Usage examples not found.')
+  public get usageExamples(): { title: string; body: string }[] {
+    return this.getSectionsWithTemplate('usage', 'Usage examples not found.')
   }
 
   /**
    * Extracts the API documentation from the README file.
    */
   public get api() {
-    return this.getSectionWithTemplate('api', 'API documentation not found.')
+    return this.getSectionsWithTemplate('api', 'API documentation not found.')
   }
 
   /**
    * Extracts the configuration options from the README file.
    */
   public get configuration() {
-    return this.getSectionWithTemplate(
+    return this.getSectionsWithTemplate(
       'configuration',
       'Configuration information not found.'
     )
@@ -89,7 +89,7 @@ export class RepoReadmeProcessor extends MarkdownParser {
    *Extract the dependencies list from the README file.
    */
   public get dependencies() {
-    return this.getSectionWithTemplate(
+    return this.getSectionsWithTemplate(
       'dependencies',
       'Dependencies not found.'
     )
@@ -98,8 +98,8 @@ export class RepoReadmeProcessor extends MarkdownParser {
   /**
    *Extract the contribution guidelines from the README file.
    */
-  public get contributionGuidelines(): { title: string; body: string } {
-    return this.getSectionWithTemplate(
+  public get contributionGuidelines(): { title: string; body: string }[] {
+    return this.getSectionsWithTemplate(
       'contribution',
       'Contribution guidelines not found.'
     )
@@ -108,8 +108,8 @@ export class RepoReadmeProcessor extends MarkdownParser {
   /**
    *Extract the icense information from the README file.
    */
-  public get licenseInfo(): { title: string; body: string } {
-    return this.getSectionWithTemplate(
+  public get licenseInfo(): { title: string; body: string }[] {
+    return this.getSectionsWithTemplate(
       'license',
       'License information not found.'
     )
@@ -118,18 +118,14 @@ export class RepoReadmeProcessor extends MarkdownParser {
   // CUSTOM PUBLIC METHODS
 
   /**
-   *Extract the project title and description from the README file.
+   * Extract the project title and description from the README file.
    */
   public get titleAndDescription(): { title: string; description: string } {
-    const titleSection = this.sections.find((section) => section.level === 1)
-
-    if (!titleSection) {
-      throw new Error('Title (h1) not found in the README.')
-    }
+    const firstSection = this.extractFirstSection()
 
     return {
-      title: titleSection.heading,
-      description: this.formatText(titleSection.body),
+      title: firstSection.heading,
+      description: firstSection.body,
     }
   }
 }

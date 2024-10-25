@@ -55,7 +55,7 @@ export class NpmReadmeProcessor extends RepoReadmeProcessor {
    *Extract the CLI usage information from the README file.
    */
   public get cliUsage() {
-    return this.getSectionWithTemplate(
+    return this.getSectionsWithTemplate(
       'cli',
       'CLI usage information not found.'
     )
@@ -65,7 +65,7 @@ export class NpmReadmeProcessor extends RepoReadmeProcessor {
    *Extract the versioning details from the README file.
    */
   public get versioningDetails() {
-    return this.getSectionWithTemplate(
+    return this.getSectionsWithTemplate(
       'versioning',
       'Versioning information not found.'
     )
@@ -75,7 +75,7 @@ export class NpmReadmeProcessor extends RepoReadmeProcessor {
    *Extract the scripts informations from the README file.
    */
   public get scriptsDetails() {
-    return this.getSectionWithTemplate(
+    return this.getSectionsWithTemplate(
       'scripts',
       'Scripts information not found.'
     )

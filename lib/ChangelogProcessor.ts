@@ -55,7 +55,7 @@ export class ChangelogProcessor extends MarkdownParser {
    *Extract information about unreleased changes from the changelog.
    */
   public get unreleasedChanges() {
-    return this.getSectionWithTemplate(
+    return this.getSectionsWithTemplate(
       'unreleased',
       'Unreleased section not found.'
     )
@@ -65,21 +65,21 @@ export class ChangelogProcessor extends MarkdownParser {
    *Extract information about added features from the changelog.
    */
   public get addedFeatures() {
-    return this.getSectionWithTemplate('added', 'No added features found.')
+    return this.getSectionsWithTemplate('added', 'No added features found.')
   }
 
   /**
    *Extract information about changed features from the changelog.
    */
   public get changedFeatures() {
-    return this.getSectionWithTemplate('changed', 'No changes found.')
+    return this.getSectionsWithTemplate('changed', 'No changes found.')
   }
 
   /**
    *Extract information about deprecated features from the changelog.
    */
   public get deprecatedFeatures() {
-    return this.getSectionWithTemplate(
+    return this.getSectionsWithTemplate(
       'deprecated',
       'No deprecated features found.'
     )
@@ -89,21 +89,21 @@ export class ChangelogProcessor extends MarkdownParser {
    *Extract information about removed features from the changelog.
    */
   public get removedFeatures() {
-    return this.getSectionWithTemplate('removed', 'No removed features found.')
+    return this.getSectionsWithTemplate('removed', 'No removed features found.')
   }
 
   /**
    *Extract information about fixes and corrections from the changelog.
    */
   public get bugFixes() {
-    return this.getSectionWithTemplate('fixed', 'No bug fixes found.')
+    return this.getSectionsWithTemplate('fixed', 'No bug fixes found.')
   }
 
   /**
    *Extract information about security updatesfrom the changelog.
    */
   public get securityUpdates() {
-    return this.getSectionWithTemplate('security', 'No security updates found.')
+    return this.getSectionsWithTemplate('security', 'No security updates found.')
   }
 
   // CUSTOM PUBLIC METHODS

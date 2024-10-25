@@ -198,7 +198,6 @@ export class MarkdownParser {
           break
         }
       }
-
       sections.push({
         level: heading.level,
         heading: heading.text,
@@ -302,17 +301,18 @@ export class MarkdownParser {
    * @returns {Object} The title and body of the matched section.
    * @throws {Error} If the section is not found.
    */
-  protected getSectionWithTemplate(
+  protected getSectionsWithTemplate(
     sectionType: string,
     errorMessage: string
-  ): { title: string; body: string } {
-    const section = this.getSectionByKeywordsInDictionary(sectionType)
-    if (!section) throw new Error(errorMessage)
+  ): { title: string; body: string }[] {
+    const sections = this.getSectionsByKeywordsInDictionary(sectionType)
+    if (sections.length === 0) throw new Error(errorMessage)
 
-    return {
+    // Format each matching section.
+    return sections.map((section) => ({
       title: section.heading,
       body: this.formatText(section.body),
-    }
+    }))
   }
 
   // DICTIONARY PUBLIC METHODS
@@ -364,32 +364,54 @@ export class MarkdownParser {
    */
   protected formatText(text: string): string {
     return text
-      .replace(/\n{3,}/g, '\n\n') // Replace 3 or more newlines with two (preserving paragraph breaks)
-      .trim() // Trim any leading or trailing spaces
+      .replace(/\n{3,}/g, '\n\n') // Replace 3 or more newlines with two (preserving paragraph breaks).
+      .trim()
   }
 
   /**
    * Retrieves a section based on keywords from the dictionary.
    *
-   * This method searches the parsed sections for a heading that matches any
-   * keyword associated with the given `sectionType` in the dictionary.
-   *
    * @param {string} sectionType - Type of section to look for (based on the dictionary).
    * @returns {Section | undefined} The matched section or undefined if not found.
    * @throws {Error} If no dictionary is provided.
    */
-  public getSectionByKeywordsInDictionary(
-    sectionType: string
-  ): Section | undefined {
+  public getSectionsByKeywordsInDictionary(sectionType: string): Section[] {
     if (!this.dictionary)
       throw new Error('No dictionary provided for keyword search.')
 
     const keywords = this.dictionary[sectionType] || []
-    return this.parsedSections.find((section) =>
-      keywords.some((keyword) =>
+    const matchingSections: Section[] = []
+
+    let currentSection: Section | null = null
+
+    for (const section of this.parsedSections) {
+      const isMatch = keywords.some((keyword) =>
         section.heading.toLowerCase().includes(keyword)
       )
-    )
+
+      // Match a section type.
+      if (isMatch) {
+        if (currentSection) {
+          matchingSections.push(currentSection)
+        }
+        currentSection = { ...section }
+      } else if (currentSection && section.level > currentSection.level) {
+        // If it's a subheading of the current section, append its body to the current section's body.
+        currentSection.body += `\n\n## ${section.heading}\n\n${section.body}`
+      } else {
+        // If it's not a match and not a subheading, push the current section and reset.
+        if (currentSection) {
+          matchingSections.push(currentSection)
+          currentSection = null
+        }
+      }
+    }
+
+    if (currentSection) {
+      matchingSections.push(currentSection)
+    }
+
+    return matchingSections
   }
 
   /**
@@ -459,9 +481,6 @@ export class MarkdownParser {
   /**
    * Retrieves an array of sections whose headings contain the specified keyword.
    *
-   * This method searches through the parsed sections and returns all sections
-   * where the heading includes the provided keyword (case-insensitive).
-   *
    * @param {string} keyword - The keyword to search for in section headings.
    * @returns {Section[]} An array of sections that contain the keyword in their headings.
    * @throws Will throw an error if no sections with the provided keyword are found.
@@ -476,6 +495,42 @@ export class MarkdownParser {
       throw new Error(`No heading found with provided keyword: '${keyword}'`)
     }
     return matchingSections
+  }
+
+  /**
+   * Extracts the first heading (h1) and its corresponding body, stopping at the next heading (regardless of level).
+   *
+   * @returns {Section} The first section containing the h1 heading and its body until the next heading.
+   * @throws {Error} If no h1 heading is found.
+   */
+  public extractFirstSection(): Section {
+    const headings = this.extractHeadings(this.content)
+
+    // Find the first heading (h1).
+    const firstHeading = headings.find((heading) => heading.level === 1)
+
+    if (!firstHeading) {
+      throw new Error('Title (h1) not found in the markdown.')
+    }
+
+    // Find the start of the next heading, regardless of level.
+    const nextHeadingIndex =
+      headings.find((heading) => heading.startIndex > firstHeading.startIndex)
+        ?.startIndex || this.content.length
+
+    // Extract the body between the first heading and the next heading.
+    const body = this.extractBody(
+      this.content,
+      firstHeading.endIndex,
+      nextHeadingIndex
+    )
+
+    // Return only the first section (first heading and its body).
+    return {
+      level: firstHeading.level,
+      heading: firstHeading.text,
+      body: this.formatText(body),
+    }
   }
 }
 
