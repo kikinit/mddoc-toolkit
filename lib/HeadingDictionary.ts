@@ -47,6 +47,18 @@ export class HeadingDictionary {
   }
 
   /**
+   * Resolves the absolute path to a file in ESM-compatible environments.
+   *
+   * @param relativePath - The relative path to the target file from the calling file's directory.
+   * @returns The resolved absolute path to the target file.
+   */
+  private resolvePath(relativePath: string): string {
+    const __filename = fileURLToPath(import.meta.url)
+    const __dirname = dirname(__filename)
+    return join(__dirname, relativePath)
+  }
+
+  /**
    * Loads a dictionary from a JSON file.
    *
    * Reads the file from the provided path and parses its content as a `Dictionary`.
@@ -100,17 +112,5 @@ export class HeadingDictionary {
       this.keywordDictionary[section] = []
     }
     this.keywordDictionary[section].push(keyword)
-  }
-
-  /**
-   * Resolves the absolute path to a file in ESM-compatible environments.
-   *
-   * @param relativePath - The relative path to the target file from the calling file's directory.
-   * @returns The resolved absolute path to the target file.
-   */
-  private resolvePath(relativePath: string): string {
-    const __filename = fileURLToPath(import.meta.url)
-    const __dirname = dirname(__filename)
-    return join(__dirname, relativePath)
   }
 }
