@@ -28,19 +28,19 @@ describe('NpmReadmeProcessor', () => {
 
   test('should extract CLI usage information', () => {
     const result = processor.cliUsage
-    expect(result.title).toEqual('CLI')
-    expect(result.body).toContain('You can interact with the package through the CLI')
+    expect(result[0].title).toEqual('CLI')
+    expect(result[0].body).toContain('You can interact with the package through the CLI')
   })
 
   test('should extract versioning details', () => {
     const result = processor.versioningDetails
-    expect(result.title).toEqual('Versioning')
-    expect(result.body).toContain('This package follows Semantic Versioning guidelines')
+    expect(result[0].title).toEqual('Versioning')
+    expect(result[0].body).toContain('This package follows Semantic Versioning guidelines')
   })
 
   test('should extract scripts information', () => {
     const result = processor.scriptsDetails
-    expect(result.title).toEqual('Scripts')
-    expect(result.body).toContain('npm run build')
+    expect(result[0].title).toEqual('Scripts')
+    expect(result[0].body).toContain('npm run build')
   })
 })

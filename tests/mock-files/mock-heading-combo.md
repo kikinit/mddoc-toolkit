@@ -6,9 +6,9 @@ Some body text.
 
 More text here.
 
-
-
 ### Heading 3
+
+Additional text for Heading 3.
 
 ## Heading 4
 

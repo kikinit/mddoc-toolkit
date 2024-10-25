@@ -28,50 +28,50 @@ describe('ChangelogProcessor', () => {
 
   test('should extract unreleased changes', () => {
     const result = processor.unreleasedChanges
-    expect(result.title).toEqual('Unreleased')
-    expect(result.body).toContain('This feature is in development')
+    expect(result[0].title).toEqual('Unreleased')
+    expect(result[0].body).toContain('This feature is in development')
   })
 
   test('should extract added features', () => {
     const result = processor.addedFeatures
-    expect(result.title).toEqual('Added')
-    expect(result.body).toContain('- Implemented new logging system.')
+    expect(result[0].title).toEqual('Added')
+    expect(result[0].body).toContain('- Implemented new logging system.')
   })
 
   test('should extract changed features', () => {
     const result = processor.changedFeatures
-    expect(result.title).toEqual('Changed')
-    expect(result.body).toContain('- Minor update to UI layout.')
+    expect(result[0].title).toEqual('Changed')
+    expect(result[0].body).toContain('- Minor update to UI layout.')
   })
 
   test('should extract deprecated features', () => {
     const result = processor.deprecatedFeatures
-    expect(result.title).toEqual('Deprecated')
-    expect(result.body).toContain(
+    expect(result[0].title).toEqual('Deprecated')
+    expect(result[0].body).toContain(
       'Legacy OAuth integration has been deprecated'
     )
   })
 
   test('should extract removed features', () => {
     const result = processor.removedFeatures
-    expect(result.title).toEqual('Removed')
-    expect(result.body).toContain(
+    expect(result[0].title).toEqual('Removed')
+    expect(result[0].body).toContain(
       'Support for Node.js version 12 has been removed'
     )
   })
 
   test('should extract bug fixes', () => {
     const result = processor.bugFixes
-    expect(result.title).toEqual('Fixed')
-    expect(result.body).toContain(
+    expect(result[0].title).toEqual('Fixed')
+    expect(result[0].body).toContain(
       '- Resolved issue with session timeout handling.'
     )
   })
 
   test('should extract security updates', () => {
     const result = processor.securityUpdates
-    expect(result.title).toEqual('Security')
-    expect(result.body).toContain(
+    expect(result[0].title).toEqual('Security')
+    expect(result[0].body).toContain(
       'Security vulnerability patched in token generation'
     )
   })
@@ -86,18 +86,24 @@ describe('ChangelogProcessor', () => {
       {
         level: 2,
         heading: '[2.2.1] - 2024-08-25',
-        body: '',
+        body: '## Changed\n\n- Minor update to UI layout.'
       },
       {
         level: 3,
         heading: 'Changed',
-        body: '- Minor update to UI layout.',
+        body: '- Minor update to UI layout.'
       },
       {
         level: 2,
         heading: '[2.2.0] - 2024-08-20',
-        body: '',
-      },
+        body: '## Added\n' +
+          '\n' +
+          '- Introduced caching mechanism for API requests.\n' +
+          '\n' +
+          '## Fixed\n' +
+          '\n' +
+          '- Patched a memory leak in the authentication module.'
+      }
     ]
 
     expect(updates).toEqual(expectedUpdates)

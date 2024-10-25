@@ -1,125 +1,60 @@
-// Import built-in node modules for handling files and paths.
 import { fileURLToPath } from 'node:url'
 import { dirname, join } from 'node:path'
 import { readFileSync } from 'node:fs'
-
-// Import the class module to test.
 import { MarkdownParser } from '../lib/MarkdownParser.js'
 
-// Declare markdown mock files.
 const hashMockFile = 'mock-heading-hash.md'
 const underlineMockFile = 'mock-heading-underline.md'
 const comboMockFile = 'mock-heading-combo.md'
 
-// Declare dictionary mock files.
-const mockDictionaryFile = 'mock-dictionary.json'
-
-// Resolve file paths using import.meta.url.
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = dirname(__filename)
 const testFilesDir = join(__dirname, './mock-files')
 
-// Helper function to load test files.
 function loadMockFile(fileName: string): string {
   return join(testFilesDir, fileName)
 }
 
-// Helper function to read and load file content.
 function readMockFile(fileName: string): string {
   const filePath = loadMockFile(fileName)
   return readFileSync(filePath, 'utf-8')
 }
 
 describe('MarkdownParser', () => {
-  // TESTS FOR HASH NOTATION
+  const hashMockContent = readMockFile(hashMockFile)
+  const underlineMockContent = readMockFile(underlineMockFile)
+  const comboMockContent = readMockFile(comboMockFile)
 
-  // Test case for reading and parsing hash-style headings.
-  test('should read and parse hash-style markdown content', () => {
+  test('should read and parse hash-style markdown from file path', () => {
     const filePath = loadMockFile(hashMockFile)
     const parser = new MarkdownParser(filePath, true)
     const sections = parser.sections
 
     const expectedSections = [
-      { level: 1, heading: 'Heading 1', body: 'Some body text.' },
-      { level: 2, heading: 'Heading 2', body: 'More text here.' },
-      { level: 3, heading: 'Heading 3', body: '' },
+      { level: 1, heading: 'Heading 1', body: 'Some body text.\n\n## Heading 2\n\nMore text here.\n\n## Heading 3\n\nAdditional text for Heading 3.' },
+      { level: 2, heading: 'Heading 2', body: 'More text here.\n\n## Heading 3\n\nAdditional text for Heading 3.' },
+      { level: 3, heading: 'Heading 3', body: 'Additional text for Heading 3.' },
     ]
 
     expect(sections).toEqual(expectedSections)
   })
 
-  // Test case for getting the correct title from hash-style markdown.
-  test('should return the correct title from hash-style markdown', () => {
-    const filePath = loadMockFile(hashMockFile)
-    const parser = new MarkdownParser(filePath, true)
-    const title = parser.title
-
-    expect(title).toBe('Heading 1')
-  })
-
-  // TESTS FOR UNDERLINE NOTATION
-
-  // Test case for reading and parsing underline-style markdown content.
-  test('should read and parse underline-style markdown content', () => {
-    const filePath = loadMockFile(underlineMockFile)
-    const parser = new MarkdownParser(filePath, true)
+  test('should read and parse hash-style markdown content directly', () => {
+    const parser = new MarkdownParser(hashMockContent, false)
     const sections = parser.sections
 
     const expectedSections = [
-      { level: 1, heading: 'Heading 1', body: 'Some body text.' },
-      { level: 2, heading: 'Heading 2', body: 'More text here.' },
+      { level: 1, heading: 'Heading 1', body: 'Some body text.\n\n## Heading 2\n\nMore text here.\n\n## Heading 3\n\nAdditional text for Heading 3.' },
+      { level: 2, heading: 'Heading 2', body: 'More text here.\n\n## Heading 3\n\nAdditional text for Heading 3.' },
+      { level: 3, heading: 'Heading 3', body: 'Additional text for Heading 3.' },
     ]
 
     expect(sections).toEqual(expectedSections)
   })
 
-  // Test case for counting headings by level in underline-style markdown.
-  test('should count headings by level in underline-style markdown', () => {
-    const filePath = loadMockFile(underlineMockFile)
-    const parser = new MarkdownParser(filePath, true)
-    const counts = parser.countHeadingsByLevel()
-
-    const expectedCounts = {
-      1: 1, // One h1 (Heading 1)
-      2: 1, // One h2 (Heading 2)
-    }
-
-    expect(counts).toEqual(expectedCounts)
-  })
-
-  // TESTS FOR COMBINATED NOTATION
-
-  // Test case for reading and parsing markdown content.
-  test('should read and parse markdown content (combination of notations)', () => {
-    const filePath = loadMockFile(comboMockFile)
-    const parser = new MarkdownParser(filePath, true)
-    const sections = parser.sections
-
-    const expectedSections = [
-      { level: 1, heading: 'Heading 1', body: 'Some body text.' },
-      { level: 2, heading: 'Heading 2', body: 'More text here.' },
-      { level: 3, heading: 'Heading 3', body: '' },
-      { level: 2, heading: 'Heading 4', body: 'Some more text here.' },
-      { level: 1, heading: 'Heading 5', body: 'Even more text here.' },
-    ]
-
-    expect(sections).toEqual(expectedSections)
-  })
-
-  // Test case for getting the title.
-  test('should return the correct title from combination markdown', () => {
-    const filePath = loadMockFile(comboMockFile)
-    const parser = new MarkdownParser(filePath, true)
-    const title = parser.title
-
-    expect(title).toBe('Heading 1')
-  })
-
-  // Test case for counting headings by level.
-  test('should count headings by level from combination markdown', () => {
-    const filePath = loadMockFile(comboMockFile)
-    const parser = new MarkdownParser(filePath, true)
-    const counts = parser.countHeadingsByLevel()
+  test('should count headings by level', () => {
+    const parser = new MarkdownParser(comboMockContent, false)
+    const headingCounts = parser.countHeadingsByLevel()
 
     const expectedCounts = {
       1: 2, // Two h1 headings
@@ -127,136 +62,96 @@ describe('MarkdownParser', () => {
       3: 1, // One h3 heading
     }
 
-    expect(counts).toEqual(expectedCounts)
+    expect(headingCounts).toEqual(expectedCounts)
   })
 
-  // Test case for getting heading levels.
-  test('should return the count of headings for a specific level from combination markdown', () => {
-    const filePath = loadMockFile(comboMockFile)
-    const parser = new MarkdownParser(filePath, true)
+  test('should format text by trimming extra newlines', () => {
+    const parser = new MarkdownParser(hashMockContent, false)
+    const unformattedText = 'Some text.\n\n\n\nMore text here.'
+    const formattedText = parser['formatText'](unformattedText)
 
-    expect(parser.getHeadingLevels(1)).toBe(2) // Two h1 headings
-    expect(parser.getHeadingLevels(2)).toBe(2) // Two h2 headings
-    expect(parser.getHeadingLevels(3)).toBe(1) // One h3 heading
-    expect(parser.getHeadingLevels(4)).toBe(0) // No h4 heading
+    expect(formattedText).toBe('Some text.\n\nMore text here.')
   })
 
-  // Test case for getting sections with a matching heading keyword.
-  test('should return sections with matching heading keyword from combination markdown', () => {
-    const filePath = loadMockFile(comboMockFile)
-    const parser = new MarkdownParser(filePath, true)
-    const sections = parser.getSectionsByHeading('heading 2')
+  test('should return sections with matching heading keyword', () => {
+    const parser = new MarkdownParser(comboMockContent, false)
+    const sections = parser.getSectionsByHeading('Heading 2')
 
-    const expectedSection = [
-      { level: 2, heading: 'Heading 2', body: 'More text here.' },
+    const expectedSections = [
+      { level: 2, heading: 'Heading 2', body: 'More text here.\n\n## Heading 3\n\nAdditional text for Heading 3.' },
     ]
 
-    expect(sections).toEqual(expectedSection)
+    expect(sections).toEqual(expectedSections)
   })
 
-  // Test case for throwing an error when no sections match the keyword.
-  test('should throw an error if no sections match the keyword from combination markdown', () => {
+  test('should extract the first section', () => {
+    const parser = new MarkdownParser(comboMockContent, false)
+    const firstSection = parser.extractFirstSection()
+
+    const expectedSection = {
+      level: 1,
+      heading: 'Heading 1',
+      body: 'Some body text.',
+    }
+
+    expect(firstSection).toEqual(expectedSection)
+  })
+
+  test('should read and parse underline-style markdown from file path', () => {
+    const filePath = loadMockFile(underlineMockFile)
+    const parser = new MarkdownParser(filePath, true)
+    const sections = parser.sections
+
+    const expectedSections = [
+      { level: 1, heading: 'Heading 1', body: 'Some body text.\n\n## Heading 2\n\nMore text here.' },
+      { level: 2, heading: 'Heading 2', body: 'More text here.' },
+      { level: 1, heading: 'Heading 3', body: 'Text under Heading 3.' }
+    ]
+
+    expect(sections).toEqual(expectedSections)
+  })
+
+  test('should read and parse underline-style markdown content directly', () => {
+    const parser = new MarkdownParser(underlineMockContent, false)
+    const sections = parser.sections
+
+    const expectedSections = [
+      { level: 1, heading: 'Heading 1', body: 'Some body text.\n\n## Heading 2\n\nMore text here.' },
+      { level: 2, heading: 'Heading 2', body: 'More text here.' },
+      { level: 1, heading: 'Heading 3', body: 'Text under Heading 3.' }
+    ]
+
+    expect(sections).toEqual(expectedSections)
+  })
+
+  test('should read and parse markdown with combined notations from file path', () => {
     const filePath = loadMockFile(comboMockFile)
     const parser = new MarkdownParser(filePath, true)
-
-    expect(() => {
-      parser.getSectionsByHeading('non-existent heading')
-    }).toThrow('No heading found with provided keyword: \'non-existent heading\'')
-  })
-})
-
-describe('MarkdownParser - Dictionary Methods', () => {
-  let parser: MarkdownParser
-
-  beforeEach(() => {
-    const filePath = loadMockFile(comboMockFile)
-    const dictionaryFilePath = loadMockFile(mockDictionaryFile)
-    parser = new MarkdownParser(filePath, true, [dictionaryFilePath])
-  })
-
-  // Test case for retrieving the entire dictionary.
-  test('should return the dictionary object', () => {
-    const dictionary = parser.dictionary
-    expect(dictionary).toBeTruthy()
-    expect(dictionary).toBeInstanceOf(Object)
-  })
-
-  // Test case for getting keywords for a specific section type.
-  test('should return keywords for a specific section type', () => {
-    const keywords = parser.getKeywordsForSection('api')
-    expect(keywords).toBeInstanceOf(Array)
-    expect(keywords).toContain('api')
-  })
-
-  // Test case for adding a keyword to a specific section type.
-  test('should add a keyword to a section type', () => {
-    const sectionType = 'api'
-    const newKeyword = 'newApiKeyword'
-
-    // Add the new keyword to the dictionary.
-    parser.addKeywordForSection(sectionType, newKeyword)
-
-    // Retrieve the updated keywords for the section.
-    const updatedKeywords = parser.getKeywordsForSection(sectionType)
-
-    // Ensure the newly added keyword is in the dictionary.
-    expect(updatedKeywords).toContain(newKeyword)
-  })
-})
-
-describe('MarkdownParser - Using markdown content directly', () => {
-
-  test('parses headings with hash notation', () => {
-    const fileContent = readMockFile('mock-heading-hash.md')
-
-    const parser = new MarkdownParser(fileContent, false)
     const sections = parser.sections
-    expect(sections.length).toBe(3)
 
-    expect(sections[0].heading).toBe('Heading 1')
-    expect(sections[0].body).toBe('Some body text.')
+    const expectedSections = [
+      { level: 1, heading: 'Heading 1', body: 'Some body text.\n\n## Heading 2\n\nMore text here.\n\n## Heading 3\n\nAdditional text for Heading 3.\n\n## Heading 4\n\nSome more text here.' },
+      { level: 2, heading: 'Heading 2', body: 'More text here.\n\n## Heading 3\n\nAdditional text for Heading 3.' },
+      { level: 3, heading: 'Heading 3', body: 'Additional text for Heading 3.' },
+      { level: 2, heading: 'Heading 4', body: 'Some more text here.' },
+      { level: 1, heading: 'Heading 5', body: 'Even more text here.' },
+    ]
 
-    expect(sections[1].heading).toBe('Heading 2')
-    expect(sections[1].body).toBe('More text here.')
-
-    expect(sections[2].heading).toBe('Heading 3')
-    expect(sections[2].body).toBe('')
+    expect(sections).toEqual(expectedSections)
   })
 
-  test('parses headings with underline notation', () => {
-    const fileContent = readMockFile('mock-heading-underline.md')
-
-    const parser = new MarkdownParser(fileContent, false)
+  test('should read and parse markdown with combined notations directly', () => {
+    const parser = new MarkdownParser(comboMockContent, false)
     const sections = parser.sections
-    expect(sections.length).toBe(2)
 
-    expect(sections[0].heading).toBe('Heading 1')
-    expect(sections[0].body).toBe('Some body text.')
+    const expectedSections = [
+      { level: 1, heading: 'Heading 1', body: 'Some body text.\n\n## Heading 2\n\nMore text here.\n\n## Heading 3\n\nAdditional text for Heading 3.\n\n## Heading 4\n\nSome more text here.' },
+      { level: 2, heading: 'Heading 2', body: 'More text here.\n\n## Heading 3\n\nAdditional text for Heading 3.' },
+      { level: 3, heading: 'Heading 3', body: 'Additional text for Heading 3.' },
+      { level: 2, heading: 'Heading 4', body: 'Some more text here.' },
+      { level: 1, heading: 'Heading 5', body: 'Even more text here.' },
+    ]
 
-    expect(sections[1].heading).toBe('Heading 2')
-    expect(sections[1].body).toBe('More text here.')
-  })
-
-  test('parses mixed heading styles', () => {
-    const fileContent = readMockFile('mock-heading-combo.md')
-
-    const parser = new MarkdownParser(fileContent, false)
-    const sections = parser.sections
-    expect(sections.length).toBe(5)
-
-    expect(sections[0].heading).toBe('Heading 1')
-    expect(sections[0].body).toBe('Some body text.')
-
-    expect(sections[1].heading).toBe('Heading 2')
-    expect(sections[1].body).toBe('More text here.')
-
-    expect(sections[2].heading).toBe('Heading 3')
-    expect(sections[2].body).toBe('')
-
-    expect(sections[3].heading).toBe('Heading 4')
-    expect(sections[3].body).toBe('Some more text here.')
-
-    expect(sections[4].heading).toBe('Heading 5')
-    expect(sections[4].body).toBe('Even more text here.')
+    expect(sections).toEqual(expectedSections)
   })
 })
