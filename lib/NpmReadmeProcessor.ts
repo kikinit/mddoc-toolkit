@@ -27,11 +27,13 @@ export class NpmReadmeProcessor extends RepoReadmeProcessor {
   /**
    * Constructs a `NpmReadmeProcessor` instance.
    *
-   * @param {string} markdownFilePath - Path to the markdown file to parse.
+   * @param {string} markdownInput - Path to the markdown file or raw markdown content.
+   * @param {boolean} isFilePath - Whether the first argument is a file path (default: true).
    * @param {string[]} dictionaryFilePaths - An array of paths to the dictionaries for keyword matching.
    */
-  constructor(
-    markdownFilePath: string,
+  public constructor(
+    markdownInput: string,
+    isFilePath: boolean = true,
     dictionaryFilePaths: string[] = [DEFAULT_DICTIONARY_PATH]
   ) {
     // Determine if the dictionary is custom or default
@@ -44,7 +46,7 @@ export class NpmReadmeProcessor extends RepoReadmeProcessor {
       ? dictionaryFilePaths // Custom dictionary, just pass it along.
       : [...dictionaryFilePaths, DEFAULT_DICTIONARY_PATH] // Merge with the default dictionary.
 
-    super(markdownFilePath, finalDictionaryPaths)
+    super(markdownInput, isFilePath, finalDictionaryPaths)
   }
 
   // PUBLIC METHODS UTILIZING TEMPLATE IN MARKDOWN PARSER
@@ -52,8 +54,8 @@ export class NpmReadmeProcessor extends RepoReadmeProcessor {
   /**
    *Extract the CLI usage information from the README file.
    */
-  get cliUsage() {
-    return this.getSectionWithTemplate(
+  public get cliUsage(): { title: string; body: string }[] {
+    return this.getSectionsWithTemplate(
       'cli',
       'CLI usage information not found.'
     )
@@ -62,8 +64,8 @@ export class NpmReadmeProcessor extends RepoReadmeProcessor {
   /**
    *Extract the versioning details from the README file.
    */
-  get versioningDetails() {
-    return this.getSectionWithTemplate(
+  public get versioningDetails(): { title: string; body: string }[] {
+    return this.getSectionsWithTemplate(
       'versioning',
       'Versioning information not found.'
     )
@@ -72,8 +74,8 @@ export class NpmReadmeProcessor extends RepoReadmeProcessor {
   /**
    *Extract the scripts informations from the README file.
    */
-  get scriptsDetails() {
-    return this.getSectionWithTemplate(
+  public get scriptsDetails(): { title: string; body: string }[] {
+    return this.getSectionsWithTemplate(
       'scripts',
       'Scripts information not found.'
     )

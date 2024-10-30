@@ -48,6 +48,9 @@ dist/
 # TypeScript declaration files
 *.d.ts
 
+# npm package
+package/
+
 ### Custom ###
 
 # Dev notes

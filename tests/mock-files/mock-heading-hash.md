@@ -8,3 +8,4 @@ More text here.
 
 ### Heading 3
 
+Additional text for Heading 3.

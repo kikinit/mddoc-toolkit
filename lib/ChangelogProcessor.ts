@@ -5,7 +5,8 @@ import { dirname } from 'path'
 import semver from 'semver'
 
 // Import internal dependencies.
-import { MarkdownParser, Section } from './MarkdownParser.js'
+import { Section } from './types/types.js'
+import { MarkdownParser} from './MarkdownParser.js'
 
 // Path to default dictionary file for this context.
 const DEFAULT_DICTIONARY_PATH = './dictionaries/changelog-dictionary.json'
@@ -29,11 +30,13 @@ export class ChangelogProcessor extends MarkdownParser {
   /**
    * Constructs a new `ChangelogProcessor` instance.
    *
-   * @param {string} markdownFilePath - The path to the README markdown file.
+   * @param {string} markdownInput - Path to the markdown file or raw markdown content.
+   * @param {boolean} isFilePath - Whether the first argument is a file path (default: true).
    * @param dictionaryFilePaths - An array of paths to the dictionaries for keyword matching.
    */
-  constructor(
-    markdownFilePath: string,
+  public constructor(
+    markdownInput: string,
+    isFilePath: boolean = true,
     dictionaryFilePaths: string[] = [DEFAULT_DICTIONARY_PATH]
   ) {
     // Determine if the dictionary is custom or default
@@ -46,14 +49,14 @@ export class ChangelogProcessor extends MarkdownParser {
       ? dictionaryFilePaths // Custom dictionary, just pass it along.
       : [...dictionaryFilePaths, DEFAULT_DICTIONARY_PATH] // Merge with the default dictionary.
 
-    super(markdownFilePath, finalDictionaryPaths)
+    super(markdownInput, isFilePath, finalDictionaryPaths)
   }
 
   /**
    *Extract information about unreleased changes from the changelog.
    */
-  get unreleasedChanges() {
-    return this.getSectionWithTemplate(
+  public get unreleasedChanges(): { title: string; body: string }[] {
+    return this.getSectionsWithTemplate(
       'unreleased',
       'Unreleased section not found.'
     )
@@ -62,22 +65,22 @@ export class ChangelogProcessor extends MarkdownParser {
   /**
    *Extract information about added features from the changelog.
    */
-  get addedFeatures() {
-    return this.getSectionWithTemplate('added', 'No added features found.')
+  public get addedFeatures(): { title: string; body: string }[] {
+    return this.getSectionsWithTemplate('added', 'No added features found.')
   }
 
   /**
    *Extract information about changed features from the changelog.
    */
-  get changedFeatures() {
-    return this.getSectionWithTemplate('changed', 'No changes found.')
+  public get changedFeatures(): { title: string; body: string }[] {
+    return this.getSectionsWithTemplate('changed', 'No changes found.')
   }
 
   /**
    *Extract information about deprecated features from the changelog.
    */
-  get deprecatedFeatures() {
-    return this.getSectionWithTemplate(
+  public get deprecatedFeatures(): { title: string; body: string }[] {
+    return this.getSectionsWithTemplate(
       'deprecated',
       'No deprecated features found.'
     )
@@ -86,22 +89,22 @@ export class ChangelogProcessor extends MarkdownParser {
   /**
    *Extract information about removed features from the changelog.
    */
-  get removedFeatures() {
-    return this.getSectionWithTemplate('removed', 'No removed features found.')
+  public get removedFeatures(): { title: string; body: string }[] {
+    return this.getSectionsWithTemplate('removed', 'No removed features found.')
   }
 
   /**
    *Extract information about fixes and corrections from the changelog.
    */
-  get bugFixes() {
-    return this.getSectionWithTemplate('fixed', 'No bug fixes found.')
+  public get bugFixes(): { title: string; body: string }[] {
+    return this.getSectionsWithTemplate('fixed', 'No bug fixes found.')
   }
 
   /**
    *Extract information about security updatesfrom the changelog.
    */
-  get securityUpdates() {
-    return this.getSectionWithTemplate('security', 'No security updates found.')
+  public get securityUpdates(): { title: string; body: string }[] {
+    return this.getSectionsWithTemplate('security', 'No security updates found.')
   }
 
   // CUSTOM PUBLIC METHODS
@@ -120,7 +123,7 @@ export class ChangelogProcessor extends MarkdownParser {
    *
    * @throws {Error} If no updates are found between the specified versions.
    */
-  getUpdatesBetweenVersions(
+  public getUpdatesBetweenVersions(
     startVersion: string,
     endVersion: string
   ): Section[] {

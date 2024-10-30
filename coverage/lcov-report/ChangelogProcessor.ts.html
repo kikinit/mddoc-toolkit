@@ -30,9 +30,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">80% </span>
+                <span class="strong">72.72% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>8/10</span>
+                <span class='fraction'>8/11</span>
             </div>
         
             
@@ -222,7 +222,11 @@
 <a name='L157'></a><a href='#L157'>157</a>
 <a name='L158'></a><a href='#L158'>158</a>
 <a name='L159'></a><a href='#L159'>159</a>
-<a name='L160'></a><a href='#L160'>160</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L160'></a><a href='#L160'>160</a>
+<a name='L161'></a><a href='#L161'>161</a>
+<a name='L162'></a><a href='#L162'>162</a>
+<a name='L163'></a><a href='#L163'>163</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -233,6 +237,8 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -388,7 +394,8 @@ import { dirname } from 'path'
 import semver from 'semver'
 &nbsp;
 // Import internal dependencies.
-import { MarkdownParser, Section } from './MarkdownParser.js'
+import { Section } from './types/types.js'
+import { MarkdownParser} from './MarkdownParser.js'
 &nbsp;
 // Path to default dictionary file for this context.
 const DEFAULT_DICTIONARY_PATH = './dictionaries/changelog-dictionary.json'
@@ -412,11 +419,13 @@ export class ChangelogProcessor extends MarkdownParser {
   /**
    * Constructs a new `ChangelogProcessor` instance.
    *
-   * @param {string} markdownFilePath - The path to the README markdown file.
+   * @param {string} markdownInput - Path to the markdown file or raw markdown content.
+   * @param {boolean} isFilePath - Whether the first argument is a file path (default: true).
    * @param dictionaryFilePaths - An array of paths to the dictionaries for keyword matching.
    */
-  constructor(
-    markdownFilePath: string,
+  public constructor(
+    markdownInput: string,
+    isFilePath: boolean = <span class="branch-0 cbranch-no" title="branch not covered" >true,</span>
     dictionaryFilePaths: string[] = [DEFAULT_DICTIONARY_PATH]
   ) {
     // Determine if the dictionary is custom or default
@@ -429,14 +438,14 @@ export class ChangelogProcessor extends MarkdownParser {
       ? <span class="branch-0 cbranch-no" title="branch not covered" >dictionaryFilePaths </span>// Custom dictionary, just pass it along.
       : [...dictionaryFilePaths, DEFAULT_DICTIONARY_PATH] // Merge with the default dictionary.
 &nbsp;
-    super(markdownFilePath, finalDictionaryPaths)
+    super(markdownInput, isFilePath, finalDictionaryPaths)
   }
 &nbsp;
   /**
    *Extract information about unreleased changes from the changelog.
    */
-  get unreleasedChanges() {
-    return this.getSectionWithTemplate(
+  public get unreleasedChanges(): { title: string; body: string }[] {
+    return this.getSectionsWithTemplate(
       'unreleased',
       'Unreleased section not found.'
     )
@@ -445,22 +454,22 @@ export class ChangelogProcessor extends MarkdownParser {
   /**
    *Extract information about added features from the changelog.
    */
-  get addedFeatures() {
-    return this.getSectionWithTemplate('added', 'No added features found.')
+  public get addedFeatures(): { title: string; body: string }[] {
+    return this.getSectionsWithTemplate('added', 'No added features found.')
   }
 &nbsp;
   /**
    *Extract information about changed features from the changelog.
    */
-  get changedFeatures() {
-    return this.getSectionWithTemplate('changed', 'No changes found.')
+  public get changedFeatures(): { title: string; body: string }[] {
+    return this.getSectionsWithTemplate('changed', 'No changes found.')
   }
 &nbsp;
   /**
    *Extract information about deprecated features from the changelog.
    */
-  get deprecatedFeatures() {
-    return this.getSectionWithTemplate(
+  public get deprecatedFeatures(): { title: string; body: string }[] {
+    return this.getSectionsWithTemplate(
       'deprecated',
       'No deprecated features found.'
     )
@@ -469,22 +478,22 @@ export class ChangelogProcessor extends MarkdownParser {
   /**
    *Extract information about removed features from the changelog.
    */
-  get removedFeatures() {
-    return this.getSectionWithTemplate('removed', 'No removed features found.')
+  public get removedFeatures(): { title: string; body: string }[] {
+    return this.getSectionsWithTemplate('removed', 'No removed features found.')
   }
 &nbsp;
   /**
    *Extract information about fixes and corrections from the changelog.
    */
-  get bugFixes() {
-    return this.getSectionWithTemplate('fixed', 'No bug fixes found.')
+  public get bugFixes(): { title: string; body: string }[] {
+    return this.getSectionsWithTemplate('fixed', 'No bug fixes found.')
   }
 &nbsp;
   /**
    *Extract information about security updatesfrom the changelog.
    */
-  get securityUpdates() {
-    return this.getSectionWithTemplate('security', 'No security updates found.')
+  public get securityUpdates(): { title: string; body: string }[] {
+    return this.getSectionsWithTemplate('security', 'No security updates found.')
   }
 &nbsp;
   // CUSTOM PUBLIC METHODS
@@ -503,7 +512,7 @@ export class ChangelogProcessor extends MarkdownParser {
    *
    * @throws {Error} If no updates are found between the specified versions.
    */
-  getUpdatesBetweenVersions(
+  public getUpdatesBetweenVersions(
     startVersion: string,
     endVersion: string
   ): Section[] {
@@ -547,7 +556,7 @@ export class ChangelogProcessor extends MarkdownParser {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2024-10-03T00:36:44.909Z
+                at 2024-10-25T18:36:24.884Z
             </div>
         <script src="prettify.js"></script>
         <script>
